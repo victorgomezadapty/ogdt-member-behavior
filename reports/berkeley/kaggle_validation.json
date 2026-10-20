@@ -1,0 +1,54 @@
+{
+  "validated_on": "2026-10-20",
+  "kernel": "vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance",
+  "kernel_id": 139741198,
+  "url": "https://www.kaggle.com/code/vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance",
+  "version": 1,
+  "remote_status": "COMPLETE",
+  "status_evidence": "Kaggle CLI kernels status returned KernelWorkerStatus.COMPLETE",
+  "is_private": true,
+  "environment": {
+    "python": "3.13.15",
+    "numpy": "2.1.3",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.0"
+  },
+  "docker_image": "gcr.io/kaggle-images/python@sha256:81b1e7c4b4f0f2a7e0a33943c95754b1b7af6b30d65221633a284b6b601cd84a",
+  "remote_source_matches_package": true,
+  "local_remote_aggregate_parity": true,
+  "source_code_sha256": {
+    "src/data/berkeley.py": "fcd8585e7b482b496662e77b21d69fe8ce4ca7e6c18cb8633d87f00009470262",
+    "src/features/monthly.py": "c4b161e7809de8146377fd819fefaca825e1e31355429d8e80133cbfd2b20d57"
+  },
+  "notebook_sha256": "86bb3243b1ec9d37310554a7ec7d9e7ae9a2097d750b92ac9855a7b148bc2675",
+  "downloaded_log_sha256": "6e77909046d35f60184698ceb513eba6307ce72ae2ea9106ade3a25e3e5f11c1",
+  "output_sha256": {
+    "ogdt_aggregate_summary.json": "96b842b16d8c318ff657918bf9736a443dfb814ef9e7525f5a2f4ac5af2c23ec",
+    "ogdt_monthly_aggregates.png": "42c7ed4b6eded17016d3a9c8c4020ad7961c42ca53654168f063c38ff8ebab0b"
+  },
+  "outputs": [
+    "ogdt_aggregate_summary.json",
+    "ogdt_monthly_aggregates.png"
+  ],
+  "summary": {
+    "source_rows": 491506,
+    "source_members": 10241,
+    "eligible_rows": 84251,
+    "eligible_members": 8073,
+    "recorded_events": 397354,
+    "mean_attendance": 4.716311972558189,
+    "zero_fraction": 0.30373526723718414,
+    "adjacent_comparisons": 73352,
+    "complete_3_month_windows": 64347,
+    "complete_6_month_windows": 43690,
+    "source_sha256": "f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9",
+    "selection_policy": "berkeley_regular_month_v1",
+    "synthetic": false,
+    "operational_use_allowed": false,
+    "member_level_outputs_written": false
+  },
+  "data_bundled": false,
+  "raw_or_member_level_outputs": false,
+  "public_release_performed": false,
+  "visual_qa": "aggregate PNG inspected; readable labels and no clipped panels"
+}

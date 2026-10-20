@@ -1,0 +1,8 @@
+{
+  "source_code_sha256": {
+    "src/data/berkeley.py": "fcd8585e7b482b496662e77b21d69fe8ce4ca7e6c18cb8633d87f00009470262",
+    "src/features/monthly.py": "c4b161e7809de8146377fd819fefaca825e1e31355429d8e80133cbfd2b20d57"
+  },
+  "notebook_sha256": "86bb3243b1ec9d37310554a7ec7d9e7ae9a2097d750b92ac9855a7b148bc2675",
+  "data_bundled": false
+}

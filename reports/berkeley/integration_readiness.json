@@ -1,0 +1,54 @@
+{
+  "dataset_id": "berkeley_gym_aer_2006",
+  "table_sha256": "e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c",
+  "local_archive_sha256": "f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9",
+  "shared_retention_archive_sha256": "f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9",
+  "archive_identity_matches": true,
+  "source_key": [
+    "id",
+    "time"
+  ],
+  "canonical_key": [
+    "dataset_id",
+    "member_id",
+    "period_end"
+  ],
+  "matching_behavior_keys_in_original_population": 84251,
+  "behavior_rows": 84251,
+  "retention_canonical_export_available": true,
+  "verified_scope": "read-only canonical feature-key, current-count and boundary comparison; no outcomes/scores joined",
+  "other_populations_joined": false,
+  "checked_at": "2026-10-20",
+  "retention_contract_version": "0.5.0",
+  "retention_existing_target_version": "berkeley_clear_transition_v1",
+  "retention_existing_historical_model": true,
+  "retention_features_sha256": "fb8e73ea289fd70f986e1e067d6848b4ab9a7d8f3f03044dc81add2585c0dd8e",
+  "retention_contract_sha256": "bee9b99e40d6cf726a7a5a51c1c25be4fa19d8189a18b00a03e1e070fbef69ae",
+  "retention_feature_rows": 81927,
+  "matched_canonical_rows": 81927,
+  "behavior_only_rows": 2324,
+  "retention_only_rows": 0,
+  "behavior_only_explanation": "family_observed_asof in Retention; Member Behavior keeps a broader regular-month subset",
+  "previous_history_available_only_in_retention": 6964,
+  "three_month_history_available_only_in_retention": 6712,
+  "history_policy_difference": "Retention allows prior prorated 11/21 months inside episodes; Behavior requires regular 1/2 months throughout its windows",
+  "model_feature_substitution_allowed": false,
+  "retention_outcomes_imported": false,
+  "new_model_trained_here": false,
+  "checks": {
+    "retention_keys_are_subset_of_behavior_keys": true,
+    "matched_current_attendance_equal": true,
+    "retention_export_marks_snapshots_eligible": true,
+    "month_close_boundaries_equivalent": true,
+    "behavior_only_rows_explained_by_family_asof": true,
+    "joint_previous_counts_agree_after_inverse_log": true,
+    "joint_three_month_means_agree_after_inverse_log": true
+  },
+  "contract_change_review": {
+    "date": "2026-10-20",
+    "previous_contract_sha256": "7a699000dcbbef7f3dd062b032c4a6b96cfeb549e7f30aa72f4c0e89a74c3373",
+    "decision": "accept editorial core-admission status and revision metadata only; all other YAML semantics equal",
+    "feature_export_unchanged": true,
+    "core_uses_original_reviewed_snapshot_for_ADR014": true
+  }
+}

@@ -1,0 +1,80 @@
+module: member_behavior
+scope: preserved_synthetic_event_adapter
+active_real_fitness_contract: monthly_data_contract.yaml
+title: Gym Member Behavior & Engagement Intelligence
+version: 0.1.0-observe
+status: exploratory_milestone_1
+synthetic_demo: true
+source:
+  dataset: mindweave/gym-memberships
+  revision: 3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e
+  scope: public_free_sample
+  license: CC-BY-NC-4.0
+  member_roster_rows: 300
+  checkin_rows: 2000
+  members_with_exported_visits: 32
+  acquisition_coverage_verified: false
+required_event_fields:
+  member_id:
+    type: stable_identifier
+    nullable: false
+    meaning: Stable person key scoped to one gym chain; pseudonymization acceptable
+  visit_timestamp:
+    type: timezone_aware_datetime
+    nullable: false
+    meaning: Attendance event instant with documented source timezone
+required_operational_metadata:
+  timezone: IANA zone or explicit offsets plus DST interpretation
+  extract_window: Half-open from/to bounds with collection completeness
+  member_coverage: Member-specific coverage periods, gaps, or unavailable status
+  event_semantics: Entry/re-entry/session definition and duplicate-event policy
+  as_of_exclusive: Explicit computation cutoff; never infer from current date
+optional_fields:
+  member_roster: Includes members with no events; required to describe non-attenders
+  visit_id: Stable unique event identifier; strongly recommended for deduplication
+  membership_start: Effective access start; signup_date is only a proxy
+  membership_plan: Prefer effective-dated plan history over current snapshot
+  home_branch: Member assignment; distinct from event branch
+  visit_branch: Branch of the attendance event; enables branch diversity
+  duration_minutes: Optional session duration with documented measurement semantics
+  membership_pauses: Effective-dated access pauses for opportunity adjustment
+  operational_calendar: Closures, opening hours, holidays and known anomalies
+retention_module_fields:
+  cancellation: Effective-dated contractual outcome
+  renewal: Effective-dated continuation event
+  expiration: Effective access end
+  reactivation: Effective access restart
+  boundary: Separate module; not behavior labels or feature inputs in Milestone 1
+source_mapping:
+  member_id: checkins.member_id -> members.id
+  visit_timestamp: checkins.checkin_datetime (naive; timezone requirement unmet)
+  visit_id: checkins.id
+  membership_start: members.signup_date (proxy)
+  membership_plan: members.plan_id -> plans.id (static)
+  home_branch: members.location_id -> locations.id
+  visit_branch: checkins.location_id -> locations.id
+  cancellation: members.cancel_date (date only)
+  cancellation_reason: members.cancel_reason
+  contract_status_snapshot: members.is_active (snapshot time unspecified)
+quality_rules:
+  - Unique non-null member and event identifiers
+  - Foreign keys resolved without multiplying attendance events
+  - Valid timestamps and explicit timezone normalization for real deployments
+  - No pre-start events without documented migration or historical entitlement
+  - Missing capture produces unknown/null; zero requires verified capture
+  - Flag overlapping sessions; do not silently collapse legitimate repeat entries
+output:
+  grain: one member per exclusive cutoff
+  required_metadata: [member_id, as_of_exclusive, synthetic, coverage_verified, sample_observation_status]
+  feature_catalog: feature_catalog.csv
+  demo_unknown_policy: No exported visits -> null attendance features; all rows coverage unverified
+  operational_use: Withhold state and risk decisions until capture and exposure are validated
+  longitudinal_extension:
+    grain: one signed-up member per exclusive historical cutoff
+    definition: ../docs/longitudinal_methodology.md
+    readiness_evidence: ../reports/longitudinal/readiness.json
+    coverage_input_template: observation_coverage_template.csv
+    status: descriptive_only_capture_requirements_unmet
+privacy:
+  behavior_requires_contact_details: false
+  derived_outputs_exclude: [first_name, last_name, email, phone]

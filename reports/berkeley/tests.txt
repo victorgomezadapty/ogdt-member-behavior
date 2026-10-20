@@ -1,0 +1,15 @@
+test_all_ineligible_input_returns_empty_output_not_zero_rows (test_monthly.MonthlyTests.test_all_ineligible_input_returns_empty_output_not_zero_rows) ... ok
+test_all_zero_left_edge_does_not_invent_last_positive_month (test_monthly.MonthlyTests.test_all_zero_left_edge_does_not_invent_last_positive_month) ... ok
+test_calendar_windows_keep_recorded_zeros (test_monthly.MonthlyTests.test_calendar_windows_keep_recorded_zeros) ... ok
+test_duplicate_keys_and_non_month_end_rejected (test_monthly.MonthlyTests.test_duplicate_keys_and_non_month_end_rejected) ... ok
+test_fractional_recorded_attendance_rejected (test_monthly.MonthlyTests.test_fractional_recorded_attendance_rejected) ... ok
+test_future_rows_and_unrelated_members_cannot_change_past (test_monthly.MonthlyTests.test_future_rows_and_unrelated_members_cannot_change_past) ... ok
+test_ineligible_high_value_cannot_bridge_a_window (test_monthly.MonthlyTests.test_ineligible_high_value_cannot_bridge_a_window) ... ok
+test_missing_calendar_row_breaks_history (test_monthly.MonthlyTests.test_missing_calendar_row_breaks_history) ... ok
+test_namespaced_population_and_full_key_required (test_monthly.MonthlyTests.test_namespaced_population_and_full_key_required) ... ok
+test_overtime_positive_attendance_is_not_an_observed_zero (test_monthly.MonthlyTests.test_overtime_positive_attendance_is_not_an_observed_zero) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.163s
+
+OK

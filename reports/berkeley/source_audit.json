@@ -1,0 +1,92 @@
+{
+  "source_columns": {
+    "id": "Individual identifier",
+    "time": "First day of the month, MATLAB code",
+    "attend": "Number of monthly attendances",
+    "contract": "Detailed contract type",
+    "imprice": "Imputed price by contract type",
+    "trprice": "Price recorded in billing system",
+    "code": "Code for the transaction",
+    "init": "Initiation fee paid",
+    "problem": "Problem with observation",
+    "club": "11 is Club 1, 13 is Club 2, 16 is Club 3",
+    "birthday": "Birthday of member",
+    "female": "Member is female",
+    "age": "Age of member",
+    "month": "Month and year of observation",
+    "begatt": "MATLAB code for April 1 1997 -- Date Data starts",
+    "endatt": "Last month in which attendance data available",
+    "endcont": "Last month in which contract data is available",
+    "endcontp": "Last effective month",
+    "overtime": "Indicator for observations beyond end of attendance data",
+    "dlocker": "Member rents a locker in that month",
+    "duplicate": "Indicator for duplicate observation, needs to be dropped"
+  },
+  "source_missing_values": {
+    "id": 0,
+    "time": 0,
+    "attend": 0,
+    "contract": 0,
+    "imprice": 0,
+    "trprice": 0,
+    "code": 0,
+    "init": 0,
+    "problem": 0,
+    "club": 0,
+    "birthday": 27296,
+    "female": 511,
+    "age": 27296,
+    "month": 0,
+    "begatt": 0,
+    "endatt": 0,
+    "endcont": 0,
+    "endcontp": 0,
+    "overtime": 0,
+    "dlocker": 0,
+    "duplicate": 0
+  },
+  "source_flag_counts": {
+    "contract": {
+      "0": 374853,
+      "1": 85115,
+      "2": 14395,
+      "7": 2827,
+      "11": 7244,
+      "14": 512,
+      "15": 550,
+      "19": 88,
+      "20": 128,
+      "21": 2218,
+      "24": 85,
+      "25": 50,
+      "27": 53,
+      "70": 1114,
+      "77": 1230,
+      "111": 1044
+    },
+    "duplicate": {
+      "0": 490272,
+      "1": 1234
+    },
+    "problem": {
+      "0": 414597,
+      "10": 76873,
+      "600": 36
+    },
+    "overtime": {
+      "0": 474974,
+      "1": 16532
+    }
+  },
+  "overlapping_exclusion_flag_counts": {
+    "excluded_outside_documented_span": 41455,
+    "excluded_author_duplicate": 1234,
+    "excluded_author_problem": 76909,
+    "excluded_overtime": 16532,
+    "excluded_nonregular_contract": 391996
+  },
+  "all_source_keys_preserved_in_eligibility_audit": true,
+  "excluded_rows_have_null_analytic_attendance": true,
+  "feature_rows_match_eligible_rows": true,
+  "historical_selection_not_point_in_time_ingestion": true
+}

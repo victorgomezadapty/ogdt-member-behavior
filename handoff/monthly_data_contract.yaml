@@ -1,0 +1,77 @@
+module: member_behavior
+adapter_version: berkeley_regular_month_v1
+status: descriptive_real_fitness_research
+source:
+  dataset_id: berkeley_gym_aer_2006
+  synthetic: false
+  grain: member_calendar_month
+  author_page: https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml
+  archive_sha256: f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9
+  table_sha256: e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c
+  source_key: [id, time]
+canonical_key: [dataset_id, member_id, period_end]
+mapping:
+  member_id: str(int(source.id)); scoped to the exact source table
+  period_end: last calendar date of source.time month after MATLAB conversion
+  as_of_exclusive: midnight immediately following period_end; monthly research convention
+  recorded_attendance_month: source.attend only if attendance_eligible
+  club_id: source.club; no cross-branch visit log inferred
+selection:
+  policy_id: berkeley_regular_month_v1
+  regular_contract_codes: [1, 2]
+  duplicate: 0
+  problem: 0
+  overtime: 0
+  span: intersection of source begatt/endatt and published club-month bounds
+  published_first_month: 1997-04
+  published_last_month_by_club:
+    11: 2000-07
+    13: 2001-02
+    16: 2001-02
+  reproduces_published_7752_member_sample: false
+  exclusion_flags_are_predictors: false
+outputs:
+  metrics: ../data/processed/berkeley/member_month_metrics.csv
+  eligibility_audit: ../data/processed/berkeley/member_month_eligibility.csv
+  field_catalog: monthly_feature_catalog.csv
+  definitions: ../docs/monthly_methodology.md
+  metrics_grain: one eligible source member-month per key
+  missing_join_semantics: missing behavior row means no eligible monthly metrics; never fill as zero
+temporal_policy:
+  input: calendar-month aggregate counts; not individual visit timestamps
+  windows: current and previous contiguous eligible calendar months
+  unavailable_month_breaks_history: true
+  incomplete_window_result: null
+  zero_previous_denominator_result: null
+  month_close_availability: research_assumption_no_ingestion_clock
+  source_flags_and_boundaries: retrospective_selection_metadata_not_predictors
+  daily_7_30_90_day_metrics: unavailable_do_not_approximate
+  within_month_last_visit_day_time_preferences: unavailable
+integration:
+  retention_source_identity_matches: true
+  retention_canonical_export_available: true
+  retention_contract_version_inspected: 0.5.0
+  shared_canonical_rows_verified: 81927
+  behavior_only_rows: 2324
+  behavior_only_explanation: family_observed_asof excluded by Retention
+  history_policy_difference: Retention permits prior prorated 11/21; Behavior uses regular 1/2 months throughout windows
+  model_feature_substitution_allowed: false
+  required_join: full canonical key and matching source table SHA-256
+  distinct_cohort_policies_may_yield_missing_rows: true
+  join_mindweave_or_lisbon_members: prohibited
+retention_boundary:
+  target: not_created_here
+  code_7_is_churn_label: false
+  retention_existing_target_version: berkeley_clear_transition_v1
+  retention_existing_historical_benchmark: true
+  retention_outcomes_imported_here: false
+  retention_target_adjudicated_in_its_own_module: true
+  new_model_trained: false
+  engagement_states_validated: false
+publication:
+  raw_and_member_level_outputs: local_only_ignored_by_git
+  source_redistribution_terms: no_explicit_redistribution_license_established_after_review
+  original_ogdt_code_license: MIT_excludes_third_party_data_and_materials
+  portable_code_only_notebook: ../publication/kaggle/ogdt_monthly_behavior.ipynb
+  public_release_performed: false
+  findings_scope: historical_sample_specific_not_current_gym_validation

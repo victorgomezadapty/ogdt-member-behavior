@@ -1,0 +1,31 @@
+{
+  "synthetic": true,
+  "status": "exploratory_only",
+  "assessed_at": "2026-10-18",
+  "operational_states_ready": false,
+  "threshold_calibration_ready": false,
+  "unmet_requirements": [
+    {
+      "requirement": "member_event_capture_windows",
+      "evidence": "No per-member acquisition window, gaps or complete-capture assertion in public files",
+      "needed": "Member-specific verified capture intervals and extraction bounds"
+    },
+    {
+      "requirement": "timestamp_timezone",
+      "evidence": "Naive check-in timestamps; no source timezone metadata",
+      "needed": "Documented IANA zone or explicit offsets and DST interpretation"
+    },
+    {
+      "requirement": "effective_access_and_operating_context",
+      "evidence": "Signup/current plan/cancel snapshot only; no pauses, access ledger, opening hours or closure calendar",
+      "needed": "Effective access intervals, pauses and operational calendars"
+    }
+  ],
+  "allowed_output": "Descriptive exported-event summaries with coverage_verified=false",
+  "deferred_output": [
+    "engagement_state",
+    "behavioral_risk_score",
+    "member_activity_segment",
+    "churn_probability"
+  ]
+}
