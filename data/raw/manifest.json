@@ -1,0 +1,45 @@
+{
+  "dataset": "mindweave/gym-memberships",
+  "revision": "3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e",
+  "synthetic": true,
+  "license": "CC-BY-NC-4.0",
+  "scope": "public free sample",
+  "retrieved_at_utc": "2026-10-13T12:56:52.139426+00:00",
+  "files": [
+    {
+      "source_path": "README.md",
+      "local_path": "dataset_card.md",
+      "url": "https://huggingface.co/datasets/mindweave/gym-memberships/resolve/3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e/README.md",
+      "bytes": 2429,
+      "sha256": "556701a64b7002b6decf71ceff9e355bca243a9d9397536c5b10aa9e78130dd4"
+    },
+    {
+      "source_path": "data/checkins.csv",
+      "local_path": "checkins.csv",
+      "url": "https://huggingface.co/datasets/mindweave/gym-memberships/resolve/3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e/data/checkins.csv",
+      "bytes": 64497,
+      "sha256": "ec03d0578309f735aa7884e4da46610def075fc8473bbf089ac0ef1cb4b5cea3"
+    },
+    {
+      "source_path": "data/members.csv",
+      "local_path": "members.csv",
+      "url": "https://huggingface.co/datasets/mindweave/gym-memberships/resolve/3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e/data/members.csv",
+      "bytes": 27421,
+      "sha256": "e856d8f8114a43e93607c262169f2af503875748d76467bc8f0b3e206921feea"
+    },
+    {
+      "source_path": "data/locations.csv",
+      "local_path": "locations.csv",
+      "url": "https://huggingface.co/datasets/mindweave/gym-memberships/resolve/3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e/data/locations.csv",
+      "bytes": 117,
+      "sha256": "e52621100598aa3bbc485a5f00ff645571ac5f9d68dd9d0fb5608e173e0e0ec3"
+    },
+    {
+      "source_path": "data/plans.csv",
+      "local_path": "plans.csv",
+      "url": "https://huggingface.co/datasets/mindweave/gym-memberships/resolve/3ff8e2fd4b429b5d0d4faf79344b3c23bc00fe5e/data/plans.csv",
+      "bytes": 152,
+      "sha256": "50602fb5be4b85fe41aeedc5dd3947657de2bc421838dc28193b617ef8f51ade"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "dataset_id": "berkeley_gym_aer_2006",
+  "synthetic": false,
+  "source_page": "https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml",
+  "local_acquisition": "byte-identical copy of author archive held in ogdt-retention",
+  "copied_from": "C:\\Users\\victo\\OneDrive\\Documents\\Gemelo Digital  Optimo\\ogdt-retention\\data\\raw\\berkeley\\data.zip",
+  "acquired_at_utc": "2026-10-19T06:29:50.015418+00:00",
+  "archive_sha256": "f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9",
+  "archive_bytes": 3515802,
+  "files": [
+    {
+      "archive_member": "GymAERSourceData.dta",
+      "bytes": 22613791,
+      "sha256": "e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c"
+    },
+    {
+      "archive_member": "readme.txt",
+      "bytes": 2552,
+      "sha256": "055b34b0c2b158fe85f8796df8a90813df7d5f8a27c27bc7f4951f0499aa2f71"
+    },
+    {
+      "archive_member": "DataGymAERMar06.do",
+      "bytes": 41379,
+      "sha256": "024eb135a70edd6bb944f98f062752eed36550d5671cd8a001b8bd27d65f8b3a"
+    }
+  ],
+  "redistribution_terms": "pending_review_no_raw_or_person_level_publication"
+}

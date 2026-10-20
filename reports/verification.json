@@ -1,0 +1,49 @@
+{
+  "all_pass": true,
+  "checks": {
+    "regression_tests": true,
+    "required_artifacts_present": true,
+    "source_hashes_and_hard_audit": true,
+    "roster_preserved": true,
+    "catalog_covers_every_output_column": true,
+    "unverified_synthetic_metadata": true,
+    "sample_absence_is_null": true,
+    "no_contract_contact_or_state_features": true,
+    "enriched_join_preserves_events": true,
+    "all_aggregations_conserve_events": true,
+    "timeline_roster_and_contract_events": true,
+    "five_executed_notebooks_three_deferred": true,
+    "snapshot_composite_keys": true,
+    "snapshots_exclude_future_signup_and_events": true,
+    "snapshot_unknown_attendance_stays_null": true,
+    "snapshot_schema_documented": true,
+    "historical_roster_conservation": true,
+    "change_summary_denominators": true,
+    "five_longitudinal_figures": true,
+    "readiness_preserves_unmet_capture_gates": true,
+    "capture_template_has_no_invented_rows": true,
+    "eleven_figures": true,
+    "contract_matches_source": true,
+    "internal_document_links": true
+  },
+  "broken_links": [],
+  "feature_columns": 29,
+  "executed_notebooks": 5,
+  "deferred_notebooks": 3,
+  "visual_inspection": {
+    "contact_sheet": "reports/visual_qa.png",
+    "figures_reviewed": [
+      "01_coverage_and_volume.png",
+      "02_visit_timeline.png",
+      "03_week_month_distributions.png",
+      "04_day_preference.png",
+      "05_time_preference.png",
+      "06_membership_tenure.png",
+      "07_branch_and_plan.png",
+      "08_monthly_patterns.png",
+      "09_member_month_heatmap.png",
+      "10_individual_trajectories.png",
+      "11_early_behavior_and_gaps.png"
+    ]
+  }
+}

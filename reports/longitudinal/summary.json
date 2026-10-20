@@ -1,0 +1,14 @@
+{
+  "synthetic": true,
+  "analysis_date": "2026-10-18",
+  "snapshots": 24,
+  "member_snapshot_rows": 4197,
+  "first_cutoff": "2023-02-01 00:00:00",
+  "last_cutoff": "2024-12-29 00:00:00",
+  "final_roster": 300,
+  "final_represented": 32,
+  "calendar_eligible_90d_final": 29,
+  "baseline_sign_disagreements": 4,
+  "figures": 5,
+  "states_ready": false
+}

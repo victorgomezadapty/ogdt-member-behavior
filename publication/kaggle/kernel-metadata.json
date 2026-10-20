@@ -1,0 +1,13 @@
+{
+  "id": "vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance",
+  "title": "OGDT Member Behavior Monthly Gym Attendance",
+  "code_file": "ogdt_monthly_behavior.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": []
+}

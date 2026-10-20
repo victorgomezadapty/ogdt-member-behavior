@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "scope": "public sample",
+  "members": 300,
+  "checkins": 2000,
+  "members_with_visits": 32,
+  "cancel_dates": 140,
+  "feature_cutoff_exclusive": "2024-12-29 00:00:00",
+  "figures": 11,
+  "hard_checks_pass": true
+}
