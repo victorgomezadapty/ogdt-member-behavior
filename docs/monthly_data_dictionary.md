@@ -1,6 +1,6 @@
-# Diccionario de origen mensual — Berkeley
+# Monthly source dictionary — Berkeley
 
-Datos históricos reales de gimnasio. El archivo de origen contiene 491.506 filas y 21 variables; las etiquetas siguientes se extraen del Stata inspeccionado. No se publican valores demográficos ni IDs en este documento. Ver [adecuación](data_readiness.md) y [metodología](monthly_methodology.md) antes de interpretar columnas.
+Real historical gym data. The source table has 491,506 rows and 21 variables; the labels below are taken from the inspected Stata file. No demographic values or IDs are published in this document. Read the [data readiness review](data_readiness.md) and the [monthly methodology](monthly_methodology.md) before interpreting any column.
 
 | Field | Stata label | Parsed type | Nulls |
 | --- | --- | --- | --- |
@@ -26,4 +26,4 @@ Datos históricos reales de gimnasio. El archivo de origen contiene 491.506 fila
 | dlocker | Member rents a locker in that month | int8 | 0 |
 | duplicate | Indicator for duplicate observation, needs to be dropped | int8 | 0 |
 
-Los límites y flags se usan para revisión, no como predictores. `contract` pertenece al contexto de selección y al trabajo de Retention; no es un target de churn automático. `time` representa un mes, no una visita. `birthday`, demografía y precios no se utilizan en el adaptador. Las definiciones de los campos derivados están en el [catálogo mensual](../handoff/monthly_feature_catalog.csv).
+Span limits and flags are used for review, never as predictors. `contract` belongs to selection context and to the Retention lab; it is not an automatic churn target. `time` is a month, not a visit. `birthday`, demographics and prices are not used by the adapter. Derived fields are defined in the [monthly feature catalog](../handoff/monthly_feature_catalog.csv).

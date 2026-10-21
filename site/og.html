@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>OGDT Member Behavior · social card</title>
+<!-- Source for assets/og.png (1200×630). Render: python scripts/render_og.py -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body { background: #f6f3ec; color: #16171a; font-family: Inter, sans-serif; display: grid; grid-template-columns: 640px 1fr; gap: 48px; padding: 56px 64px; position: relative; }
+  body::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 10px; background: repeating-linear-gradient(90deg, #c8372d 0 26px, transparent 26px 38px); }
+  .left { display: flex; flex-direction: column; justify-content: space-between; }
+  .kicker { display: flex; gap: 12px; align-items: center; font: 600 17px "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .06em; color: #74716a; }
+  .pill { background: #16171a; color: #f6f3ec; padding: 6px 12px; border-radius: 999px; }
+  h1 { font: 800 100px/0.93 "Barlow Condensed", sans-serif; text-transform: uppercase; margin-top: 26px; }
+  h1 em { font-style: normal; color: #c8372d; }
+  .stat { display: flex; align-items: center; gap: 20px; }
+  .stat b { font: 600 84px/1 "JetBrains Mono", monospace; color: #c8372d; }
+  .stat span { font-size: 25px; line-height: 1.35; color: #4f4d48; }
+  .foot { font: 500 19px "JetBrains Mono", monospace; color: #74716a; }
+  .card { align-self: center; background: #fffdf8; border: 1px solid #ddd7ca; border-radius: 22px; padding: 26px; box-shadow: 0 24px 50px -30px rgba(22, 23, 26, .45); }
+  .card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+  .card-head b { font: 800 27px "Barlow Condensed", sans-serif; text-transform: uppercase; letter-spacing: .03em; }
+  .card-head span { font: 500 13px "JetBrains Mono", monospace; color: #74716a; text-transform: uppercase; }
+  .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 9px; }
+  .grid i { aspect-ratio: 1; border-radius: 50%; background: #16171a; }
+  .grid i.e { background: transparent; border: 2.5px dashed #c8372d; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <div>
+      <p class="kicker"><span class="pill">Open Gym Digital Twin</span>Observe</p>
+      <h1>A paid month<br>is not a <em>visited</em><br>month.</h1>
+    </div>
+    <div class="stat"><b>30.4%</b><span>of 84,251 regular paid<br>member-months recorded<br>no visit at all</span></div>
+    <p class="foot">ogdt-member-behavior.vercel.app</p>
+  </div>
+  <div class="card">
+    <div class="card-head"><b>Membership card</b><span>100 paid months</span></div>
+    <div class="grid" id="grid"></div>
+  </div>
+<script>
+  // Same seeded layout as the site's membership card (assets/app.js).
+  var order = [], seed = 20061, empty = {};
+  for (var i = 0; i < 100; i++) order.push(i);
+  for (var s = 99; s > 0; s--) { seed = (seed * 1103515245 + 12345) % 2147483648; var r = seed % (s + 1), t = order[s]; order[s] = order[r]; order[r] = t; }
+  order.slice(0, 30).forEach(function (p) { empty[p] = true; });
+  var g = document.getElementById('grid');
+  for (var j = 0; j < 100; j++) { var c = document.createElement('i'); if (empty[j]) c.className = 'e'; g.appendChild(c); }
+</script>
+</body>
+</html>

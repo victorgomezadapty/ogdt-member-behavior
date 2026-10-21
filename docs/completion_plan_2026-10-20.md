@@ -1,20 +1,24 @@
-# Cierre autorizado — 20 de octubre de 2026
+# Authorized close — 20 October 2026
 
-Se continúa con Berkeley ya inspeccionado; no se incorpora otra fuente ni se entrena un modelo.
-La fuente real mensual permite las 12 métricas descriptivas existentes. El conjunto regular incluye
-84.251 filas/8.073 socios; comparte 81.927 claves con Retention pero difiere en exclusión de familias
-e historial prorrateado. Las poblaciones/políticas se conservan separadas. Los flags retrospectivos
-condicionan selección, no constituyen features disponibles en vivo.
+Work continues with the already inspected Berkeley source; no other source is added and no model is trained.
+The real monthly source supports the 12 existing descriptive metrics. The regular set has
+84,251 rows from 8,073 members; it shares 81,927 keys with Retention but differs in family exclusion
+and prorated history. Populations and policies stay separate. Retrospective flags shape selection;
+they are not features available in real time.
 
-1. Construir notebook autónomo de código, sin datos adjuntos ni dependencia del repositorio o Retention.
-   Descargar de la fuente primaria en almacenamiento temporal, comprobar ambos hashes y mostrar agregados.
-   Probar ejecución privada real en Kaggle y guardar resultado y entorno efectivo.
-2. Completar handoff mensual de seis documentos y fijar su revisión local. Admitir en el core un adaptador
-   opcional con namespace de población propio, doce métricas y verificaciones independientes de fórmulas,
-   ventanas, nulidad, corte y equivalencia de cada fila del export revisado. No sustituir el modelo de Retention.
-3. Registrar ADR, esquema, capacidades, registro de módulos y evidencia de ejecución juntos.
+1. Build a standalone code notebook with no attached data and no dependency on the repository or Retention.
+   Download from the primary source to temporary storage, check both hashes and show aggregates.
+   Test a real private run on Kaggle and record the result and the actual environment.
+2. Complete the six-document monthly handoff and pin its local revision. Admit into the core an optional adapter
+   with its own population namespace, twelve metrics and independent checks of formulas, windows, nulls, cut-off
+   and equivalence of every row of the reviewed export. Do not replace Retention's model.
+3. Record the ADR, schema, capabilities, module registry and execution evidence together.
 
-La página primaria y README no han aportado una licencia explícita de redistribución de datos.
-El paquete no contendrá ZIP, tabla ni exports individuales. La licencia del código OGDT no aplica a esos datos.
-La ejecución remota será privada; publicar una versión pública es un paso distinto. Estados, riesgo operativo,
-datos diarios y efectos de intervención siguen fuera de alcance, sin bloquear esta entrega histórica.
+The primary page and README have not provided an explicit data redistribution license.
+The package contains no ZIP, table or individual exports. The OGDT code license does not apply to those data.
+The remote run is private; publishing a public version is a separate step. States, operational risk,
+daily data and intervention effects stay out of scope without blocking this historical delivery.
+
+**Update, 21 October 2026:** the public step was taken. The notebook is public on Kaggle (version 2, COMPLETE,
+aggregate totals identical to the local run), the code is public on GitHub and an aggregate-only site is live.
+No data, member IDs or member-level outputs were published.

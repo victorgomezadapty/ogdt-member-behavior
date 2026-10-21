@@ -1,30 +1,30 @@
-# Member Behavior mensual · especificación de componente
+# Monthly Member Behavior · component specification
 
-Propósito: convertir asistencia mensual elegible en 12 métricas descriptivas con soporte y nulidad
-explícitos. Entrada: Berkeley exacto, hashes ZIP/tabla y esquema verificados; claves únicas id/time;
-selección `berkeley_regular_month_v1`. Salida: una fila por `(dataset_id,member_id,period_end)` elegible,
-12 métricas y metadatos definidos en [catálogo](monthly_feature_catalog.csv). No produce outcomes o estados.
+Purpose: turn eligible monthly attendance into 12 descriptive metrics with explicit support and nulls.
+Input: the exact Berkeley source, with verified ZIP and table hashes and schema; unique id/time keys;
+selection `berkeley_regular_month_v1`. Output: one row per eligible `(dataset_id,member_id,period_end)`,
+12 metrics and metadata defined in the [catalog](monthly_feature_catalog.csv). It produces no outcomes or states.
 
-Handoff activo: `monthly_data_contract.yaml`, `monthly_feature_catalog.csv`,
-`monthly_metrics_definition.md`, `monthly_findings.md`, `monthly_limitations.md` y este documento.
-El handoff original de eventos sintéticos queda preservado e independiente.
+Active handoff: `monthly_data_contract.yaml`, `monthly_feature_catalog.csv`,
+`monthly_metrics_definition.md`, `monthly_findings.md`, `monthly_limitations.md` and this document.
+The original synthetic-event handoff is preserved and independent.
 
-Implementación del laboratorio: `src/data/berkeley.py`, `src/features/monthly.py`; numpy y pandas.
-Verificación: `scripts/verify_berkeley.py`; pruebas en `tests/test_monthly.py`.
-Notebook portátil: `publication/kaggle/ogdt_monthly_behavior.ipynb`, construido desde esas mismas funciones
-sin imports del repositorio, reports precomputados o Retention; funciona en Kaggle con dependencias incluidas.
+Lab implementation: `src/data/berkeley.py`, `src/features/monthly.py`; numpy and pandas.
+Verification: `scripts/verify_berkeley.py`; tests in `tests/test_monthly.py`.
+Portable notebook: `publication/kaggle/ogdt_monthly_behavior.ipynb`, built from the same functions
+without repository imports, precomputed reports or Retention; it runs on Kaggle with the bundled dependencies.
 
-Adaptador core: `open-gym-digital-twin/ogdt_core/behavior.py`, biblioteca estándar, sin importar el lab.
-Lee export revisado por hash, verifica esquema/identidad/política/cierre/nulidad y recalcula las 12
-fórmulas de todas las filas. `MemberMonthBehavior` usa namespace propio de población
-`behavior_regular_member_months_v1`. Fuente/version y claves completas preservadas. El puente opcional
-a Retention declara explícitamente el mapeo entre esas dos políticas revisadas, coteja todas las claves
-y conteos actuales, y devuelve solo evidencia agregada; no mezcla outcomes ni sustituye features.
+Core adapter: `open-gym-digital-twin/ogdt_core/behavior.py`, standard library only, without importing the lab.
+It reads a hash-reviewed export, verifies schema, identity, policy, close and nulls, and recomputes the 12
+formulas for every row. `MemberMonthBehavior` uses its own population namespace
+`behavior_regular_member_months_v1`. Source, version and full keys are preserved. The optional bridge
+to Retention declares the mapping between those two reviewed policies explicitly, checks every key
+and current count, and returns aggregate evidence only; it does not mix outcomes or replace features.
 
-Fallos: abortar por hash cambiado, duplicado, campo no revisado, fuente/política incompatible, mes no
-calendario, valor no finito/no integral actual, reloj incorrecto, fórmula o nulidad discordante. Un cambio
-requiere revisión deliberada del manifiesto. Un mes ausente rompe ventanas, no crea una fila cero.
-El corte es fecha de cierre disponible proxy ≤ as-of; el core solo expone agregados por métrica/mes.
+Failures: abort on a changed hash, duplicate, unreviewed field, incompatible source or policy, non-calendar
+month, non-finite or non-integral current value, wrong clock, or a mismatched formula or null. A change
+requires a deliberate manifest review. A missing month breaks windows; it does not create a zero row.
+The cut-off is the proxy available close date ≤ as-of; the core exposes only aggregates per metric and month.
 
-Alcance aceptable: investigación descriptiva histórica, no operación ni predicción. Métricas candidatas
-no son estados de engagement, decisiones o riesgos validados. El pipeline de Retention queda intacto.
+Acceptable scope: descriptive historical research, not operations or prediction. Candidate metrics
+are not validated engagement states, decisions or risks. The Retention pipeline stays intact.
