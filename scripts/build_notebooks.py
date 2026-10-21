@@ -20,6 +20,9 @@ m, c = tables["members"], tables["checkins"]
 '''
 
 
+from src.behavior.roadmap import DEFERRED_NOTEBOOKS, outline
+
+
 def notebook(filename, cells):
     nb = nbf.v4.new_notebook(cells=[nbf.v4.new_markdown_cell(body) if kind == "md" else nbf.v4.new_code_cell(body) for kind, body in cells])
     nb.metadata["kernelspec"] = {"display_name": "Python 3", "language": "python", "name": "python3"}
@@ -99,8 +102,8 @@ def main():
         ("code", 'cutoff = c.checkin_datetime.max().normalize() + pd.Timedelta(days=1)\nfeatures = member_metrics(m, c, cutoff)\nprint("Exclusive cutoff", cutoff, "timezone unspecified")\ndisplay(features.head())\ndisplay(features.sample_observation_status.value_counts().to_frame())\nunknown = features.sample_observation_status.eq("no_visits_in_public_sample")\nassert features.loc[unknown, "visits_30d"].isna().all()\nassert not features.coverage_verified.any()\ndisplay(pd.read_csv(ROOT / "handoff/feature_catalog.csv"))'),
         ("md", "## Proposed Phase 2\n\nVerify event capture, timezone, entitlement and operating calendars. Examine recency, frequency, trend and consistency jointly with tenure; compare within-member trajectories; calibrate candidate rules against distributions and operational review before state definitions. Synthetic monthly curves cannot prove January/summer or closure/promotion effects. Behavioral risk would not be contractual churn probability. Secondary datasets must test methods independently, never row-merge members."),
     ])
-    for filename, title in [("04_member_states.ipynb", "Member states"), ("05_segmentation.ipynb", "Segmentation"), ("06_behavioral_risk.ipynb", "Behavioral risk")]:
-        notebook(filename, [("md", f"# {title} — deferred\n\n**Intentionally not implemented in Milestone 1.**\n\nFirst establish member-level event capture and temporal/exposure validity, inspect distributions, and validate operational interpretations. No final thresholds, states, clusters or risk scores exist. Behavioral risk must remain separate from contractual churn probability. See docs/behavioral_state_definition.md and handoff/module_spec.md for Phase 2 gates.")])
+    for filename, title, body in DEFERRED_NOTEBOOKS:
+        notebook(filename, [("md", outline(title, body))])
     print("Built three observation notebooks, three deferred outlines, and feature catalog")
 
 

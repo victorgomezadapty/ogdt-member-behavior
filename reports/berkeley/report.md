@@ -1,16 +1,16 @@
-# Comportamiento mensual real — Berkeley
+# Real monthly behavior — Berkeley
 
-**Gym Member Behavior & Engagement Intelligence · revisión de fuente 19 de octubre; integración actualizada 20 de octubre de 2026**
+**Gym Member Behavior & Engagement Intelligence · source review 19 October 2026; integration updated 20 October 2026**
 
-Investigación activa de asistencia mensual con datos históricos reales de gimnasio. El sandbox sintético Mindweave permanece separado. Se revisó la adecuación antes de implementar: [plan](../../docs/project_plan.md), [evaluación](../../docs/data_readiness.md), [diccionario](../../docs/monthly_data_dictionary.md) y [definiciones](../../docs/monthly_methodology.md).
+Active research on monthly attendance with real historical gym data. The Mindweave synthetic sandbox stays separate. Suitability was reviewed before implementation: [plan](../../docs/project_plan.md), [data readiness](../../docs/data_readiness.md), [dictionary](../../docs/monthly_data_dictionary.md) and [definitions](../../docs/monthly_methodology.md).
 
-## Qué permite responder la fuente
+## What the source can answer
 
-Podemos describir volumen, cambios y consistencia mensual para la misma población que usa Retention. No contiene visitas individuales públicas en esta tabla: no permite días desde la última visita, horarios, días de semana ni ventanas exactas de 7/30/90 días. La procedencia es el [archivo del autor](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml); los nombres y flags se verificaron en el Stata, README y código del ZIP. Las fechas mensuales y las métricas son de 1997–2001, no de un gimnasio actual.
+We can describe monthly volume, change and consistency for the same population used by the Retention lab. The public table has no individual visits: it does not support days since the last visit, time of day, weekday, or exact 7/30/90-day windows. Provenance is the [author archive](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml); names and flags were checked against the Stata file, README and code in the ZIP. Months and metrics come from 1997–2001, not from a present-day gym.
 
-## Población y selección antes de analizar
+## Population and selection before analysis
 
-Origen: **491,506 filas**, **10,241 IDs** y **21 variables**. Clave `(id,time)` única. Subconjunto principal: **84,251 meses regulares de 8,073 miembros**, bajo política `berkeley_regular_month_v1`. Estos conteos no reproducen la muestra publicada de 7.752 miembros ni sus exclusiones completas.
+Source: **491,506 rows**, **10,241 IDs** and **21 variables**. The key `(id,time)` is unique. Main subset: **84,251 regular months from 8,073 members**, under policy `berkeley_regular_month_v1`. These counts do not reproduce the published 7,752-member sample or all of its exclusions.
 
 | stage | rows | members |
 | --- | --- | --- |
@@ -19,21 +19,21 @@ Origen: **491,506 filas**, **10,241 IDs** y **21 variables**. Clave `(id,time)` 
 | Source review flags accepted | 372809 | 8606 |
 | Regular contract months (1/2) | 84251 | 8073 |
 
-La cascada aplica filtros secuenciales; los flags individuales pueden solaparse. Exige contratos regulares 1/2, flags aceptados y periodo documentado. Los meses sin contrato, prorrateados, congelados, promocionales, ambiguos y fuera de seguimiento se excluyen del análisis principal. La tabla de elegibilidad conserva todas las claves originales y convierte su asistencia analítica a nulo. **No se imputan ceros a meses excluidos.**
+The cascade applies filters in sequence; individual flags can overlap. It requires regular contracts 1/2, accepted flags and the documented period. Months without a contract, prorated, frozen, promotional, ambiguous or outside follow-up are excluded from the main analysis. The eligibility table keeps every original key and sets the analytical attendance of excluded months to null. **Excluded months are never imputed as zero.**
 
-El club 1 tiene asistencias en agosto de 2000, pero todas sus filas de ese mes tienen overtime=1 y quedan fuera. El periodo principal termina en julio de 2000 para ese club y en febrero de 2001 para los otros dos. No se decide cobertura mirando únicamente la existencia de filas o de conteos positivos.
+Club 11 has attendance in August 2000, but every row for that month has overtime=1 and is excluded. The main period therefore ends in July 2000 for that club and in February 2001 for the other two. Coverage is never decided from the mere presence of rows or positive counts.
 
-Después de combinar todos los filtros, las filas elegibles efectivas van de **1997-05-31** a **2001-01-31**. Los límites publicados no garantizan que cada mes de frontera aporte filas elegibles bajo esta política.
+After all filters are combined, eligible rows run from **1997-05-31** to **2001-01-31**. Published limits do not guarantee that every boundary month contributes eligible rows under this policy.
 
-## Asistencia registrada en meses elegibles
+## Recorded attendance in eligible months
 
-Se contabilizan **397,354 asistencias** dentro de los meses seleccionados, media **4.72**, mediana **3.0** y **30.4% de meses con cero registrado**. El denominador es meses-persona elegibles, no todos los socios o toda la asistencia del gimnasio. Estos ceros se preservan; no son etiquetas Dormant o churn. La composición regular varía por club/mes y la gráfica no valida estacionalidad ni efectos causales.
+The selected months contain **397,354 recorded visits**: mean **4.72**, median **3.0**, and **30.4% of months with zero recorded**. The denominator is eligible member-months, not all members or all gym attendance. These zeros are kept; they are not Dormant or churn labels. The regular-month composition varies by club and month, and the chart does not validate seasonality or causal effects.
 
-## Trayectorias y ventanas mensuales
+## Monthly trajectories and windows
 
-Hay **73,352 comparaciones de meses adyacentes elegibles**, **64,347 ventanas completas de tres meses** y **43,690 de seis meses**. Los huecos o exclusiones interrumpen cada racha; no se comparan meses separados como si fueran consecutivos.
+There are **73,352 comparisons of adjacent eligible months**, **64,347 complete three-month windows** and **43,690 six-month windows**. Gaps and exclusions break every run; separated months are never compared as if they were consecutive.
 
-Entre las comparaciones válidas: **23,259 diferencias positivas**, **20,933 iguales** y **29,160 negativas**. Son signos aritméticos, no estados validados. El porcentaje de cambio es nulo con denominador previo cero. La longitud de racha no se denomina antigüedad contractual, y la distancia al último mes positivo no se convierte en recencia diaria.
+Among valid comparisons: **23,259 positive differences**, **20,933 equal** and **29,160 negative**. These are arithmetic signs, not validated states. The percentage change is null when the previous month is zero. Run length is not called contract tenure, and distance to the last positive month is not turned into daily recency.
 
 | metric | non_null_rows |
 | --- | --- |
@@ -50,31 +50,31 @@ Entre las comparaciones válidas: **23,259 diferencias positivas**, **20,933 igu
 | consecutive_eligible_months | 84251 |
 | months_since_recorded_positive_month | 77089 |
 
-Las seis trayectorias de volumen A–F conservan nulos/cortes en meses excluidos; no representan segmentos ni una muestra probabilística. La agregación mensual no permite reconstruir hábitos por día/hora. Una desviación estándar cero en meses con cero asistencia tampoco acredita hábito estable.
+The six volume trajectories A–F keep nulls and breaks in excluded months; they are not segments or a probability sample. Monthly aggregation cannot reconstruct day or hour habits. A zero standard deviation across zero-attendance months does not demonstrate a stable habit either.
 
-## Compatibilidad con Retention
+## Compatibility with Retention
 
-El ZIP congelado coincide byte a byte con el origen local de Retention: `f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9`. Tabla Stata: `e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c`. Las **84,251 claves** de métricas encuentran correspondencia en la población original compartida, usando `(dataset_id, member_id, period_end)` con `dataset_id=berkeley_gym_aer_2006`.
+The frozen ZIP is byte-identical to Retention's local source: `f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9`. Stata table: `e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c`. All **84,251 metric keys** match the shared original population using `(dataset_id, member_id, period_end)` with `dataset_id=berkeley_gym_aer_2006`.
 
-La inspección final se actualiza con el estado vigente de Retention. Export canónico disponible: **True**. Filas canónicas cotejadas: **81,927**; filas exclusivas de Member Behavior: **2,324**. Cuando existe el export, se verifican igualdad del conteo actual y equivalencia de frontera mensual. Las diferencias de población se explican mediante familia observada hasta ese mes, excluida por Retention; nuestras ventanas también son más estrictas y no incluyen sus meses prorrateados previos. Los nombres/transformaciones de features no son intercambiables para su modelo.
+The final check reflects the current state of Retention. Canonical export available: **True**. Canonical rows matched: **81,927**; rows only in Member Behavior: **2,324**. When the export exists, current counts and month boundaries are checked for equality. Population differences are explained by family observed to date, which Retention excludes; our windows are also stricter and do not include its earlier prorated months. Feature names and transformations are not interchangeable for its model.
 
-Retention ya dispone del target propio **berkeley_clear_transition_v1** y de un benchmark histórico en su módulo, según el contrato inspeccionado. Aquí **no se importan outcomes ni scores**, no se reentrena ese modelo y no se promueve uso operativo. Si el export no está disponible, la verificación queda limitada a origen y claves originales, como indica el JSON. [Evidencia actualizada de compatibilidad](integration_readiness.json).
+Retention already has its own target **berkeley_clear_transition_v1** and a historical benchmark in its module, according to the inspected contract. **No outcomes or scores are imported here**, that model is not retrained and no operational use is promoted. If the export is unavailable, verification is limited to source and original keys, as the JSON records. [Updated compatibility evidence](integration_readiness.json).
 
-No se cruzan personas de Berkeley con Mindweave ni Lisboa. El código de verificación rechaza namespaces o hashes distintos aunque los IDs se parezcan. No se cambió ningún archivo de Retention. [Evidencia de integración](integration_readiness.json).
+Berkeley members are never linked with Mindweave or Lisbon. The verification code rejects different namespaces or hashes even when IDs look alike. No Retention file was changed. [Integration evidence](integration_readiness.json).
 
-## Limitaciones y próximo paso
+## Limits and next step
 
-El diseño describe meses regulares de una muestra histórica; no reproduce por completo los filtros del artículo ni valida comportamiento de gimnasios actuales. Flags y fines de seguimiento condicionan selección retrospectiva. No son predictores; el archivo tampoco contiene reloj de ingesta. Se asume que el agregado está disponible al cierre del mes para investigación, sin acreditarlo en producción.
+The design describes regular months of a historical sample; it does not fully reproduce the paper's filters or validate behavior in present-day gyms. Flags and follow-up ends shape a retrospective selection. They are not predictors, and the archive has no ingestion clock. For research, the aggregate is assumed to be available at month close; this is not demonstrated for production.
 
-El target propio de Retention se restringe a discontinuidad registrada entre estados claros y mantiene otros resultados desconocidos; no equivale a churn permanente ni a scoring actual de un gimnasio. El código 7 no se convierte aquí en churn. No se entrenó un modelo en este laboratorio ni se asignaron estados de engagement, clusters o riesgo. Antes de publicar filas originales/derivados identificables se deben resolver términos de redistribución. Los archivos por persona quedan solo locales e ignorados por Git.
+Retention's own target is restricted to recorded discontinuity between clear states and keeps other outcomes unknown; it is not permanent churn or present-day gym scoring. Code 7 is not turned into churn here. No model was trained in this lab, and no engagement states, clusters or risk were assigned. Redistribution terms must be resolved before original rows or identifiable derivatives are published. Person-level files stay local and are ignored by Git.
 
-El siguiente paso viable es revisar la admisión en core y la política de selección/historial entre consumidores, manteniendo separados features de conducta y resultados futuros. El benchmark ya existente de Retention conserva sus propios límites y definición de target. Este cotejo de features no acredita efectos de intervención ni valida estados de engagement. No se necesita inventar detalle diario ni añadir clustering para completar esta fase descriptiva.
+The next viable step is to review core admission and the selection/history policy across consumers, keeping behavior features and future outcomes separate. Retention's existing benchmark keeps its own limits and target definition. This feature comparison does not demonstrate intervention effects or validate engagement states. No daily detail needs to be invented, and no clustering is needed to complete this descriptive phase.
 
-## Reproducir
+## Reproduce
 
-`python scripts/acquire_berkeley.py --source ../ogdt-retention/data/raw/berkeley/data.zip`, después `python scripts/analyze_berkeley.py`, `python scripts/execute_notebooks.py --notebook 07_berkeley_monthly_eda.ipynb` y `python scripts/verify_berkeley.py`. Ver [contrato mensual](../../handoff/monthly_data_contract.yaml) y [catálogo](../../handoff/monthly_feature_catalog.csv). La revisión de fuente y el procesamiento no alteran el target ni el laboratorio Retention.
+`python scripts/acquire_berkeley.py --download` (or `--source ../ogdt-retention/data/raw/berkeley/data.zip`), then `python scripts/analyze_berkeley.py`, `python scripts/execute_notebooks.py --notebook 07_berkeley_monthly_eda.ipynb` and `python scripts/verify_berkeley.py`. See the [monthly contract](../../handoff/monthly_data_contract.yaml) and [catalog](../../handoff/monthly_feature_catalog.csv). Source review and processing do not alter the target or the Retention lab.
 
-## Figuras
+## Figures
 
 ### Calendar rows are filtered before describing attendance
 
@@ -94,4 +94,5 @@ El siguiente paso viable es revisar la admisión en core y la política de selec
 
 ### Six volume-rank examples preserve unavailable-month gaps
 
-![Six volume-rank examples preserve unavailable-month gaps](figures/05_individual_trajectories.png)
+*Kept local only.* This figure shows six individual members' monthly series. Redistribution rights for the source are not established, so it is excluded from Git and every public output.
+

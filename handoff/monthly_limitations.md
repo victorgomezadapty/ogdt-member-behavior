@@ -1,22 +1,22 @@
-# Límites de la admisión mensual
+# Limits of the monthly admission
 
-Tres gimnasios históricos, selección propia de meses regulares; no representa automáticamente otros
-gimnasios, Optimo, la cohorte publicada completa ni la población actual. Los endpoints/flags son
-retrospectivos y pueden incorporar información posterior al corte; condicionan elegibilidad y no se
-admiten como predictores. No hay reloj de ingesta ni zona horaria comprobada. Ver
-[adecuación de fuente](../docs/data_readiness.md) y [plan](../docs/project_plan.md).
+Three historical gyms and this lab's own selection of regular months; it does not automatically represent other
+gyms, Optimo, the complete published cohort or a present-day population. Endpoints and flags are
+retrospective and may carry information from after the cut-off; they shape eligibility and are not
+admitted as predictors. There is no ingestion clock and no verified time zone. See the
+[source suitability review](../docs/data_readiness.md) and the [plan](../docs/project_plan.md).
 
-Un conteo mensual no contiene fechas de visitas, horas, duración, aforo, acceso efectivo, cierres ni
-razones de ausencia. Las rachas solo miden historia elegible visible; meses sin soporte no son cero.
-Recencia positiva desconocida al inicio no se imputa. Contratos no regulares e historiales interrumpidos
-no se analizan mediante estas ventanas. La composición cambia entre meses y las observaciones por
-persona se repiten. No se estimó incertidumbre de muestreo, estabilidad de estados ni efecto de intervención.
+A monthly count contains no visit dates, hours, duration, occupancy, effective access, closures or
+reasons for absence. Runs only measure visible eligible history; months without support are not zero.
+Unknown positive recency at the start is not imputed. Non-regular contracts and interrupted histories
+are not analysed with these windows. Composition changes between months and observations per person
+repeat. No sampling uncertainty, state stability or intervention effect was estimated.
 
-Las políticas de Member Behavior y Retention son diferentes, aunque procedan del mismo archivo.
-Identidad de fuente no otorga equivalencia de población o features. Lisboa y Mindweave no se unen
-por persona. No se validan engagement, riesgo, churn contractual, acciones ni transferencia operacional.
+The Member Behavior and Retention policies differ even though they come from the same archive.
+Source identity does not grant equivalence of population or features. Lisbon and Mindweave are never
+joined by person. Engagement, risk, contractual churn, actions and operational transfer are not validated.
 
-Derechos de redistribución del ZIP/tabla/derivados individuales no establecidos; originales y filas
-individuales quedan locales e ignorados por Git. El core entrega agregados. La publicación Kaggle
-usa código autónomo y fuente primaria en almacenamiento temporal, sin adjuntar datos. MIT solo cubre
-código/documentación originales OGDT. [Revisión de derechos](../docs/publication_review.md).
+Redistribution rights for the ZIP, the table and individual derivatives are not established; originals and
+individual rows stay local and are ignored by Git. The core delivers aggregates. The Kaggle publication
+uses standalone code and the primary source in temporary storage, with no data attached. MIT covers only
+original OGDT code and documentation. [Rights review](../docs/publication_review.md).

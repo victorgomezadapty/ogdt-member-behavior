@@ -1,46 +1,46 @@
-# Plan vigente — comportamiento mensual con una fuente fitness real
+# Current plan — monthly behavior with a real fitness source
 
-Decisión registrada el **19 de octubre de 2026**, antes de construir el adaptador mensual. Se revisaron la memoria del workspace, el plan y la evaluación de Retention, documentación primaria y el archivo original. El laboratorio conserva su pregunta: comprender trayectorias de asistencia sin equiparar comportamiento, engagement y baja contractual.
+Decision recorded on **19 October 2026**, before the monthly adapter was built. The workspace memory, the Retention plan and assessment, primary documentation and the original archive were reviewed. The lab keeps its question: understand attendance trajectories without equating behavior, engagement and contractual exit.
 
-## Actualización de cierre — 20 de octubre de 2026
+## Closing update — 20 October 2026
 
-Retention avanzó durante la ejecución. Su contrato v0.5 y su definición `berkeley_clear_transition_v1` ya adjudican un target histórico acotado; existe un benchmark propio y export canónico. Se releyeron esos documentos y se cotejó el export efectivo: **81.927 claves compartidas**, conteos actuales iguales y fronteras mensuales equivalentes; **2.324 filas adicionales de Member Behavior** se explican por la exclusión de familias observadas hasta t en Retention. Además, sus ventanas admiten meses previos prorrateados 11/21, mientras aquí se requieren regulares 1/2. Estas features no se sustituyen automáticamente en su modelo. Se conserva la separación de outcomes/scores y no se modifica Retention. Ver `reports/berkeley/integration_readiness.json`.
+Retention moved forward during execution. Its v0.5 contract and its `berkeley_clear_transition_v1` definition now adjudicate a bounded historical target; it has its own benchmark and a canonical export. Those documents were re-read and the actual export was compared: **81,927 shared keys**, equal current counts and equivalent month boundaries. **2,324 additional Member Behavior rows** are explained by Retention's exclusion of families observed up to t. Its windows also admit earlier prorated months (11/21), while this lab requires regular months (1/2). These features do not automatically replace those in its model. Outcomes and scores stay separate and Retention is not modified. See `reports/berkeley/integration_readiness.json`.
 
-Las referencias a target o adquisición pendientes en las secciones siguientes documentan la evaluación inicial del 19 de octubre; esta actualización prevalece para el estado actual. Retention también declara verificada la equivalencia primaria del CSV de Lisboa; Member Behavior no lo procesa ni vuelve a validar esa equivalencia. Continúan fuera de validación el uso operativo, la ingesta real, los estados ambiguos y la generalización a gimnasios actuales.
+References to a pending target or acquisition in the sections below record the initial assessment of 19 October; this update takes precedence for the current state. Retention also reports that the primary equivalence of the Lisbon CSV is verified; Member Behavior neither processes that file nor re-validates the equivalence. Operational use, real ingestion, ambiguous states and generalization to present-day gyms remain unvalidated.
 
-## Evaluación durante el plan
+## Assessment during planning
 
-**Berkeley, Paying Not to Go to the Gym**, procede de gimnasios reales. Se inspeccionó `GymAERSourceData.dta` dentro del ZIP del autor: 491.506 filas, 10.241 identificadores, 21 columnas y clave `(id,time)` única. El archivo público es socio/mes; `time` marca el inicio del mes en fecha MATLAB y `attend` es el conteo mensual. Su calendario bruto abarca enero de 1997–marzo de 2001 e incluye meses fuera de seguimiento y sin contrato. Tener una fila no equivale a tener exposición de asistencia. El artículo y el código del autor complementan las etiquetas del archivo.
+**Berkeley, Paying Not to Go to the Gym**, comes from real gyms. `GymAERSourceData.dta` inside the author ZIP was inspected: 491,506 rows, 10,241 identifiers, 21 columns and a unique `(id,time)` key. The public file is member-month; `time` marks the start of the month as a MATLAB date and `attend` is the monthly count. Its raw calendar covers January 1997–March 2001 and includes months outside follow-up and without a contract. Having a row is not the same as having attendance exposure. The paper and the author's code complement the file's labels.
 
-**Mindweave** sigue siendo útil para comprobar software con eventos sintéticos. Sus 2.000 check-ins cubren solo 32 de 300 miembros; esa muestra no valida comportamientos reales ni debe ampliarse para aparentar evidencia fitness. Se conservan sus notebooks, métricas y reportes como referencia metodológica, separados de Berkeley.
+**Mindweave** remains useful to test software with synthetic events. Its 2,000 check-ins cover only 32 of 300 members; that sample does not validate real behavior and must not be expanded to look like fitness evidence. Its notebooks, metrics and reports are kept as methodological reference, separate from Berkeley.
 
-**Lisboa** corresponde a otra población. La documentación primaria describe datos reales de una instalación deportiva. En Retention ya existe un CSV adquirido de un espejo con procedencia registrada; la equivalencia byte a byte con el archivo primario no está confirmada. Sus campos agregados de fin de relación no sirven para crear una secuencia mensual histórica. Este hito no lo procesa ni lo une con Berkeley.
+**Lisbon** is a different population. Its primary documentation describes real data from a sports facility. Retention already holds a CSV acquired from a mirror with recorded provenance; byte-for-byte equivalence with the primary file is not confirmed. Its aggregated end-of-relationship fields cannot build a historical monthly sequence. This milestone does not process it or join it with Berkeley.
 
-## Alcance que sí permiten los datos
+## Scope the data supports
 
-1. Congelar localmente el ZIP ya adquirido por Retention, comprobar hashes y preservar nombres/etiquetas originales. No modificar Retention ni publicar los datos originales.
-2. Auditar meses, flags, códigos y fronteras por club. Separar cobertura de filas calendario y de elegibilidad contractual.
-3. Construir un adaptador descriptivo mensual con clave `(dataset_id, member_id, period_end)` y métricas de ventanas de meses calendario. No convertirlas en visitas diarias o ventanas exactas de 30/90 días.
-4. Usar como análisis principal un subconjunto explícito de meses regulares: `contract in {1,2}`, `duplicate=0`, `problem=0`, `overtime=0` y fechas dentro de límites de asistencia y del periodo publicado por centro. Los meses excluidos permanecen auditados; su asistencia analítica es desconocida/no aplicable, nunca un cero imputado.
-5. Comparar meses adyacentes y calcular ventanas de tres/seis meses solo cuando todos los meses consecutivos tienen asistencia elegible. No atravesar huecos, meses congelados, prorrateados o fuera de captura. Mantener los ceros que sí están registrados en meses elegibles.
-6. Describir distribuciones, trayectoria temporal y variación individual con denominadores explícitos. Entregar diccionario mensual, reporte, notebook y contrato de integración.
+1. Freeze the ZIP already acquired by Retention locally, check hashes and keep original names and labels. Do not modify Retention or publish the original data.
+2. Audit months, flags, codes and boundaries per club. Separate calendar-row coverage from contractual eligibility.
+3. Build a descriptive monthly adapter keyed by `(dataset_id, member_id, period_end)` with calendar-month window metrics. Do not turn them into daily visits or exact 30/90-day windows.
+4. Use an explicit subset of regular months as the main analysis: `contract in {1,2}`, `duplicate=0`, `problem=0`, `overtime=0`, and dates inside the attendance limits and the period published for each club. Excluded months stay audited; their analytical attendance is unknown or not applicable, never an imputed zero.
+5. Compare adjacent months and compute three- and six-month windows only when every consecutive month has eligible attendance. Never bridge gaps or frozen, prorated or out-of-capture months. Keep the zeros that are actually recorded in eligible months.
+6. Describe distributions, the time path and individual variation with explicit denominators. Deliver a monthly dictionary, report, notebook and integration contract.
 
-## Fronteras y decisiones comprobadas
+## Boundaries and verified decisions
 
-El club 1 tiene filas de agosto de 2000 con asistencia positiva, pero `overtime=1`; se excluyen. El periodo publicado termina en julio de 2000 para ese club. Para los clubes 2 y 3 termina en febrero de 2001. Estos límites se combinan con los metadatos de fuente; no basta con `time <= endatt`.
+Club 11 has rows for August 2000 with positive attendance but `overtime=1`; they are excluded. The published period ends in July 2000 for that club and in February 2001 for clubs 13 and 16. These limits are combined with source metadata; `time <= endatt` alone is not enough.
 
-Las 491.506 filas contienen 374.853 códigos contractuales 0. No son 374.853 casos de disengagement. El código 7 mezcla congelación/cancelación dentro del mes; 70 identifica impago en la documentación; ninguno se transforma en un target de churn en este laboratorio. La selección principal deliberadamente excluye esos meses.
+The 491,506 rows contain 374,853 contract codes equal to 0. They are not 374,853 cases of disengagement. Code 7 mixes freezing and cancellation within the month; 70 identifies non-payment in the documentation; neither becomes a churn target in this lab. The main selection deliberately excludes those months.
 
-No se reproduce la muestra publicada de 7.752 socios: faltan las exclusiones completas por spell/familia/promociones. Se etiquetará el subconjunto como **meses de contrato regular de la fuente bruta**, con sus propias cifras y límites. No se reconstruye antigüedad desde el primer mes visible como si fuera la fecha real de alta.
+The published 7,752-member sample is not reproduced: the complete spell, family and promotion exclusions are missing. The subset is labelled **regular contract months of the raw source**, with its own figures and limits. Tenure is not reconstructed from the first visible month as if it were the real join date.
 
-## Enlace y temporalidad
+## Linkage and timing
 
-El ZIP inspeccionado tiene SHA-256 `f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9`, coincidente con la fuente de Retention; su tabla tiene SHA-256 `e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c`. Se utilizará `dataset_id=berkeley_gym_aer_2006`, `member_id=str(int(id))` y `period_end` como último día calendario. Es una compatibilidad comprobada de población/origen, no una autorización para usar labels todavía no adjudicados.
+The inspected ZIP has SHA-256 `f2abbaa0312b697c56892621782073a8dd4b0fbf7cdbb8b9746a28c6398772f9`, matching Retention's source; its table has SHA-256 `e56ffe6177eb5e1508555d07a756a58f9e74d051eed12601ab5a34919949289c`. The keys are `dataset_id=berkeley_gym_aer_2006`, `member_id=str(int(id))` and `period_end` as the last calendar day. This is verified population and source compatibility, not permission to use labels that are not yet adjudicated.
 
-Las métricas en el cierre de mes usan exclusivamente el mes actual y pasados. Disponibilidad en ese cierre es una hipótesis de investigación; no existe reloj de ingesta. Las fechas finales del extracto, flags y correcciones retrospectivas condicionan selección/auditoría, pero no son predictores. El target y seguimiento contractual permanecen en Retention, aún pendientes de adjudicación. No se entrenan modelos ni se asignan estados finales en esta continuación.
+Month-close metrics use only the current and past months. Availability at that close is a research assumption; there is no ingestion clock. Extract end dates, flags and retrospective corrections shape selection and audit, but are not predictors. The contractual target and follow-up stay in Retention, still pending adjudication at the time of this plan. No models are trained and no final states are assigned in this continuation.
 
-## Pendiente y criterio de aceptación
+## Open items and acceptance criteria
 
-Verificar conservación de claves, nulidad ante huecos, ventanas sin información futura y compatibilidad exacta con el archivo compartido; guardar evidencia ejecutable. Documentar permisos de redistribución antes de publicar filas originales o derivados identificables. No extrapolar este estudio histórico a gimnasios actuales, Optimo o decisiones de intervención. Estados/segmentos/riesgo requieren una fase posterior con semántica, objetivo y validación explícitos.
+Verify key preservation, nulls across gaps, windows without future information and exact compatibility with the shared archive; keep executable evidence. Document redistribution permissions before publishing original rows or identifiable derivatives. Do not extrapolate this historical study to present-day gyms, Optimo or intervention decisions. States, segments and risk require a later phase with explicit semantics, objective and validation.
 
-Fuentes primarias: [página de datos del autor](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml), [artículo](https://eml.berkeley.edu/~sdellavi/wp/gymemp06-03-19.pdf), README y `DataGymAERMar06.do` dentro del archivo inspeccionado. [Lisboa: ficha primaria](https://data.mendeley.com/datasets/yprk4jdgnv/1). La procedencia y decisiones adicionales quedan en `docs/data_readiness.md`.
+Primary sources: [author data page](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml), [paper](https://eml.berkeley.edu/~sdellavi/wp/gymemp06-03-19.pdf), and the README and `DataGymAERMar06.do` inside the inspected archive. [Lisbon: primary record](https://data.mendeley.com/datasets/yprk4jdgnv/1). Further provenance and decisions are in `docs/data_readiness.md`.

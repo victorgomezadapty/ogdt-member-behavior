@@ -1,42 +1,42 @@
-# Adecuación y decisión de fuente — 19 de octubre de 2026
+# Source suitability and decision — 19 October 2026
 
-Esta evaluación precede a la implementación del adaptador mensual. Se basa en documentación primaria y en la inspección efectiva del archivo local; no en el nombre comercial de un dataset.
+This assessment precedes the implementation of the monthly adapter. It is based on primary documentation and on inspecting the actual local file, not on a dataset's commercial name.
 
-**Actualización final del 20 de octubre:** el estado inicial se conserva abajo como historial de evaluación. Retention v0.5 ya dispone de un target mensual propio y benchmark histórico; su export real de 81.927 features mensuales se cotejó con Member Behavior. Todas sus claves encuentran correspondencia y las 2.324 filas adicionales de nuestro subconjunto se explican por familia observada hasta t. Conteos actuales y fronteras temporales concuerdan. Las ventanas históricas tienen políticas diferentes, por lo que las features no son sustitutos directos del modelo de Retention. No se cargaron outcomes ni scores. La evidencia exacta y los hashes del export/contrato están en [integración](../reports/berkeley/integration_readiness.json).
+**Final update, 20 October:** the initial state is kept below as assessment history. Retention v0.5 now has its own monthly target and historical benchmark; its real export of 81,927 monthly features was compared with Member Behavior. Every key matches, and the 2,324 additional rows in our subset are explained by family observed up to t. Current counts and time boundaries agree. Historical windows follow different policies, so the features are not direct substitutes for Retention's model inputs. No outcomes or scores were loaded. Exact evidence and the export and contract hashes are in [integration](../reports/berkeley/integration_readiness.json).
 
-El informe actual de Retention declara equivalencia primaria del CSV de Lisboa y target adjudicado; las menciones de esos pendientes en la evaluación inicial ya no describen su estado actual. Este laboratorio mantiene Lisboa fuera del pipeline y no afirma una verificación primaria independiente de ese archivo.
+Retention's current report declares primary equivalence of the Lisbon CSV and an adjudicated target; mentions of those open items in the initial assessment no longer describe its current state. This lab keeps Lisbon out of its pipeline and does not claim an independent primary verification of that file.
 
-| Criterio | Berkeley | Mindweave | Lisboa |
+| Criterion | Berkeley | Mindweave | Lisbon |
 | --- | --- | --- | --- |
-| Dominio y origen | Gimnasios reales; fuente pública de replicación del autor | Cadena de gimnasio simulada; muestra pública sintética | Instalación deportiva real según ficha primaria; CSV local en Retention obtenido de espejo |
-| Unidad | Persona/mes; 21 columnas | Miembro, check-in sintético, plan, sede | Persona agregada; no panel mensual libre |
-| Identidad y enlace | `(id,time)` única; misma fuente/hash que Retention | IDs de otra población, sin enlace con Berkeley | Otra población; prohibido unir personas con las otras fuentes |
-| Conducta | `attend`, conteo mensual | Eventos con reloj, captura incompleta | Agregados de uso y de fin de relación; no reconstruir snapshots |
-| Tiempo y cobertura | Calendario bruto 1997-01 a 2001-03; límites y overtime por centro | Fechas 2023–2024; solo 32 miembros con visitas | Las columnas del CSV adquirido incluyen fechas y resúmenes de final de relación; inspección semántica corresponde a Retention |
-| Resultados contractuales | `contract` detallado; target/censura pendientes | cancel_date/is_active sintéticos | Dropout de la propia fuente, no equivalente automáticamente |
-| Alcance aceptado aquí | Investigación descriptiva de asistencia mensual de contratos regulares; interfaz compartida | Sandbox preservado, no evidencia real | Fuera del nuevo pipeline; comparación independiente posterior |
+| Domain and origin | Real gyms; author's public replication source | Simulated gym chain; public synthetic sample | Real sports facility per primary record; local CSV in Retention obtained from a mirror |
+| Unit | Person-month; 21 columns | Member, synthetic check-in, plan, branch | Aggregated person; no free monthly panel |
+| Identity and linkage | Unique `(id,time)`; same source and hash as Retention | IDs from another population, no link with Berkeley | Another population; joining people with the other sources is forbidden |
+| Behavior | `attend`, monthly count | Clocked events, incomplete capture | Usage and end-of-relationship aggregates; snapshots must not be reconstructed |
+| Time and coverage | Raw calendar 1997-01 to 2001-03; limits and overtime per club | Dates 2023–2024; only 32 members with visits | The acquired CSV includes dates and end-of-relationship summaries; semantic inspection belongs to Retention |
+| Contractual outcomes | Detailed `contract`; target and censoring pending | Synthetic cancel_date/is_active | The source's own dropout, not automatically equivalent |
+| Scope accepted here | Descriptive research on monthly attendance in regular contracts; shared interface | Preserved sandbox, not real evidence | Outside the new pipeline; later independent comparison |
 
-## Comprobado directamente
+## Verified directly
 
-- Hash ZIP y hash Stata coinciden con el origen auditado en Retention. No se reutilizan IDs parecidos de poblaciones distintas.
-- 491.506 filas, 10.241 IDs, 51 meses calendario, claves únicas y sin huecos en la malla bruta por ID. La malla incluye meses sin contrato; no acredita seguimiento continuo.
-- `attend` es entero no negativo (0–42). Flags y límites de seguimiento existen; las ausencias demográficas no se imputan porque no se usan.
-- `duplicate` marca 1.234 filas aunque `(id,time)` sea única: significa un problema de registro de persona del autor, no una clave duplicada ordinaria.
-- Hay 16.532 filas con `overtime=1` y 76.909 con `problem != 0`. Se auditan y se excluyen del subconjunto principal.
-- El club 1 tiene 5.181 asistencias registradas en agosto de 2000, mes marcado overtime para sus 4.468 filas. Se excluye en lugar de presentar ese mes como captura regular.
-- Meses principales antes de agregar métricas: 84.251 filas regulares correspondientes a 8.073 miembros, tras filtros explícitos. Este conteo no reproduce la muestra del artículo.
+- ZIP and Stata hashes match the source audited in Retention. Similar-looking IDs from different populations are never reused.
+- 491,506 rows, 10,241 IDs, 51 calendar months, unique keys and no gaps in the raw grid per ID. The grid includes months without a contract; it does not demonstrate continuous follow-up.
+- `attend` is a non-negative integer (0–42). Flags and follow-up limits exist; missing demographics are not imputed because they are not used.
+- `duplicate` marks 1,234 rows even though `(id,time)` is unique: it flags an author-identified person-record problem, not an ordinary duplicate key.
+- 16,532 rows have `overtime=1` and 76,909 have `problem != 0`. They are audited and excluded from the main subset.
+- Club 11 has 5,181 recorded visits in August 2000, a month marked overtime for all 4,468 of its rows. It is excluded rather than presented as regular capture.
+- Main months before computing metrics: 84,251 regular rows from 8,073 members, after explicit filters. This count does not reproduce the paper's sample.
 
-## Hipótesis y pendientes
+## Assumptions and open items
 
-- Se asume disponibilidad al cierre mensual para estudiar features retrospectivos; el archivo no conserva ingesta ni revisiones históricas. No es una evaluación point-in-time de producción.
-- Los meses regulares se seleccionan conservadoramente, no como prueba de seguimiento perfecto. El artículo discute posibles errores de registro; un cero elegible es un cero mensual registrado, no ausencia absoluta probada.
-- Las exclusiones completas del artículo, contratos/prorrateos y spells siguen sin reproducirse. No llamar a esta muestra la de 7.752 personas ni asignar una fecha de alta desde el borde izquierdo.
-- Fin de contrato, baja voluntaria, congelación e impago requieren definición y censura en Retention. No se asignan labels ni se mezclan sus variables de fin de seguimiento con los predictores de conducta.
-- Los términos de redistribución del archivo de Berkeley no están resueltos. Trabajo local de investigación; raw y derivados por persona quedan fuera de Git y de publicación.
-- La equivalencia del CSV de Lisboa con los bytes de la fuente primaria está pendiente; el manifiesto de Retention indica espejo atribuido. Esta continuación no lo procesa ni modifica sus archivos.
+- Availability at month close is assumed in order to study retrospective features; the file keeps no ingestion or historical revisions. This is not a production point-in-time evaluation.
+- Regular months are selected conservatively, not as proof of perfect follow-up. The paper discusses possible recording errors; an eligible zero is a recorded monthly zero, not proven absolute absence.
+- The paper's complete exclusions, contracts, proration and spells are still not reproduced. Do not call this the 7,752-person sample or assign a join date from the left edge.
+- Contract end, voluntary exit, freezing and non-payment need definition and censoring in Retention. No labels are assigned and its end-of-follow-up variables are never mixed with behavior predictors.
+- Redistribution terms for the Berkeley archive are unresolved. This is local research work; raw data and person-level derivatives stay out of Git and out of any publication.
+- Equivalence of the Lisbon CSV with the primary source bytes is pending; Retention's manifest records an attributed mirror. This continuation does not process or modify those files.
 
-## Decisión
+## Decision
 
-**Apto para EDA de conducta mensual, con selección y cobertura auditadas. No apto todavía para estados validados, churn prediction o intervención operacional.** Adoptar Berkeley como investigación activa de Member Behavior permite compartir identidad real con Retention; conservar Mindweave como evidencia de software y metodología exclusivamente sintética.
+**Suitable for monthly behavior EDA, with audited selection and coverage. Not yet suitable for validated states, churn prediction or operational intervention.** Adopting Berkeley as Member Behavior's active research shares a real identity with Retention; Mindweave is kept as software and methodology evidence that is exclusively synthetic.
 
-Referencias: [Berkeley](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml), [artículo y apéndice de datos](https://eml.berkeley.edu/~sdellavi/wp/gymemp06-03-19.pdf), README y código original dentro del ZIP. Evaluación de Retention consultada en `../ogdt-retention/docs/project_plan.md` y `../ogdt-retention/docs/data_readiness.md`; se dejan intactas.
+References: [Berkeley](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml), [paper and data appendix](https://eml.berkeley.edu/~sdellavi/wp/gymemp06-03-19.pdf), and the README and original code inside the ZIP. Retention's assessment was consulted in `../ogdt-retention/docs/project_plan.md` and `../ogdt-retention/docs/data_readiness.md`; both are left untouched.
