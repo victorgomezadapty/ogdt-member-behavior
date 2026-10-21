@@ -18,6 +18,6 @@ reports/longitudinal/figures/*.png
 reports/longitudinal/report.html
 data/raw/berkeley/data.zip
 data/processed/berkeley/*.csv
-reports/berkeley/figures/*.png
+reports/berkeley/figures/05_individual_trajectories.png
 reports/berkeley/report.html
 reports/kaggle-runtime/

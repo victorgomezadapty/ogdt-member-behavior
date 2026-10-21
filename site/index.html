@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OGDT Member Behavior · A paid month is not a visited month</title>
+<meta name="title-en" content="OGDT Member Behavior · A paid month is not a visited month">
+<meta name="title-es" content="OGDT Member Behavior · Un mes pagado no es un mes entrenado">
+<meta name="description" content="What can attendance alone tell us about gym member engagement before anyone talks about churn? A reproducible look at 84,251 regular member-months from a real historical health-club archive.">
+<meta property="og:title" content="OGDT Member Behavior · A paid month is not a visited month">
+<meta property="og:description" content="3 in 10 regular paid months recorded no visit. A reproducible, aggregate-only study of 84,251 member-months from a real historical health-club archive.">
+<meta property="og:image" content="https://ogdt-member-behavior.vercel.app/assets/og.png">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121315" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/lang.js"></script>
+</head>
+<body>
+<a class="skip" href="#main"><span data-l="en">Skip to content</span><span data-l="es">Ir al contenido</span></a>
+<header class="topbar">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="OGDT Member Behavior">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="6" width="28" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="9" cy="13" r="1.8"/><circle cx="15" cy="13" r="1.8"/><circle cx="21" cy="13" r="1.8"/><circle cx="9" cy="19" r="1.8"/></g><circle cx="15" cy="19" r="1.8" fill="none" stroke="var(--accent)" stroke-width="1.4"/><circle cx="21" cy="19" r="1.8" fill="currentColor"/></svg>
+      <span>OGDT <b>Member Behavior</b></span>
+    </a>
+    <nav class="nav" aria-label="Site">
+      <a href="#visits"><span data-l="en">Findings</span><span data-l="es">Hallazgos</span></a>
+      <a href="#method"><span data-l="en">Method</span><span data-l="es">Método</span></a>
+      <a href="#limits"><span data-l="en">Limits</span><span data-l="es">Límites</span></a>
+      <a href="https://github.com/victorgomezadapty/ogdt-member-behavior">GitHub</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language / Idioma">
+      <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-set-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="kicker"><span class="pill">Open Gym Digital Twin</span><span data-l="en">Observe · member behavior lab</span><span data-l="es">Observar · laboratorio de comportamiento</span></p>
+      <h1 data-l="en">A paid month<br>is not a <em>visited</em> month.</h1>
+      <h1 data-l="es">Un mes pagado<br>no es un mes <em>entrenado</em>.</h1>
+      <p class="lead" data-l="en">Gyms see bookings, payments and renewals long before they see someone leave. Attendance is the earliest honest signal. Using a real historical archive from three US health clubs, this lab measures what monthly attendance can, and cannot, say about engagement before anyone talks about churn.</p>
+      <p class="lead" data-l="es">Los gimnasios ven reservas, pagos y renovaciones mucho antes de ver a alguien irse. La asistencia es la señal honesta más temprana. Con un archivo histórico real de tres clubes de EE. UU., este laboratorio mide qué puede decir, y qué no, la asistencia mensual sobre el compromiso antes de hablar de churn.</p>
+      <div class="cta">
+        <a class="btn primary" href="#visits"><span data-l="en">See the findings</span><span data-l="es">Ver los hallazgos</span> ↓</a>
+        <a class="btn" href="https://www.kaggle.com/code/vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance"><span data-l="en">Run it on Kaggle</span><span data-l="es">Ejecutarlo en Kaggle</span> ↗</a>
+      </div>
+    </div>
+    <figure class="card-wrap" aria-labelledby="card-caption">
+      <div class="member-card">
+        <div class="card-head">
+          <span class="card-title"><span data-l="en">Membership card</span><span data-l="es">Tarjeta de socio</span></span>
+          <span class="card-sub mono"><span data-l="en">100 paid regular months</span><span data-l="es">100 meses regulares pagados</span></span>
+        </div>
+        <div class="punches" id="punches" aria-hidden="true"></div>
+        <div class="card-foot">
+          <span class="legend-item"><i class="sw punched"></i><span data-l="en">at least one visit</span><span data-l="es">al menos una visita</span></span>
+          <span class="legend-item"><i class="sw empty"></i><span data-l="en">no recorded visit</span><span data-l="es">ninguna visita registrada</span></span>
+        </div>
+      </div>
+      <figcaption id="card-caption"><b class="big mono" data-count="30">30</b><span data-l="en">of every 100 regular paid months recorded <b>no visit at all</b> (30.4% of 84,251).</span><span data-l="es">de cada 100 meses regulares pagados <b>no registraron ninguna visita</b> (30,4 % de 84.251).</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="stats" aria-label="Key numbers">
+  <div class="wrap stat-grid">
+    <div class="stat"><b class="mono" data-fmt="eligible_rows">84,251</b><span data-l="en">regular member-months analysed</span><span data-l="es">meses-socio regulares analizados</span></div>
+    <div class="stat"><b class="mono" data-fmt="eligible_members">8,073</b><span data-l="en">members across 3 clubs</span><span data-l="es">socios en 3 clubes</span></div>
+    <div class="stat"><b class="mono" data-fmt="recorded_events_in_eligible_rows">397,354</b><span data-l="en">recorded visits, 1997–2001</span><span data-l="es">visitas registradas, 1997–2001</span></div>
+    <div class="stat"><b class="mono">3 <small>/ 4.7</small></b><span data-l="en">median / mean visits per month</span><span data-l="es">visitas por mes, mediana / media</span></div>
+  </div>
+</section>
+
+<section class="chapter" id="visits">
+  <div class="wrap">
+    <p class="eyebrow mono">01</p>
+    <h2 data-l="en">How many visits does a paid month buy?</h2>
+    <h2 data-l="es">¿Cuántas visitas compra un mes pagado?</h2>
+    <p class="intro" data-l="en">The most common month is a month with no visit. After that the curve falls steadily: a long tail of regulars sits behind a large group who pay and rarely come. A mean of 4.7 hides that split; the median is 3.</p>
+    <p class="intro" data-l="es">El mes más frecuente es un mes sin visitas. Después la curva baja de forma sostenida: detrás de un gran grupo que paga y casi no viene hay una cola larga de habituales. La media de 4,7 esconde esa división; la mediana es 3.</p>
+    <div class="chart-card">
+      <div class="chart-title"><span data-l="en">Eligible member-months by recorded visits in the month</span><span data-l="es">Meses-socio elegibles según visitas registradas en el mes</span></div>
+      <div class="chart" id="chart-hist" role="img" aria-label="Histogram of member-months by visits per month"></div>
+      <details class="table-view"><summary><span data-l="en">Show as table</span><span data-l="es">Ver como tabla</span></summary><div data-table="hist"></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="windows">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow mono">02</p>
+      <h2 data-l="en">Three paid months in a row, none attended.</h2>
+      <h2 data-l="es">Tres meses pagados seguidos, ninguno entrenado.</h2>
+      <p class="intro" data-l="en">A single empty month can be a holiday or an injury. Three consecutive eligible months with no recorded visit is a different conversation. It happened in about 1 of every 6 complete three-month windows.</p>
+      <p class="intro" data-l="es">Un mes vacío puede ser vacaciones o una lesión. Tres meses elegibles seguidos sin ninguna visita registrada es otra conversación. Ocurrió en cerca de 1 de cada 6 ventanas completas de tres meses.</p>
+      <p class="note" data-l="en">Windows only count consecutive eligible months. An excluded month breaks the window; it is never filled with a zero.</p>
+      <p class="note" data-l="es">Las ventanas solo cuentan meses elegibles consecutivos. Un mes excluido rompe la ventana; nunca se rellena con un cero.</p>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span data-l="en">Complete 3-month windows by months with at least one visit</span><span data-l="es">Ventanas completas de 3 meses según meses con al menos una visita</span></div>
+      <div class="chart" id="chart-windows" role="img" aria-label="Share of three-month windows by number of months with a visit"></div>
+      <details class="table-view"><summary><span data-l="en">Show as table</span><span data-l="es">Ver como tabla</span></summary><div data-table="windows"></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="streak">
+  <div class="wrap">
+    <p class="eyebrow mono">03</p>
+    <h2 data-l="en">The first month is the busiest.</h2>
+    <h2 data-l="es">El primer mes es el más activo.</h2>
+    <p class="intro" data-l="en">In the first eligible month of a run, 23% of months record no visit. By month eleven it is close to 36%, and mean visits fall from 5.2 to 4.3. Then the line turns, around the one-year mark.</p>
+    <p class="intro" data-l="es">En el primer mes elegible de una racha, el 23 % de los meses no registra visitas. Hacia el mes once se acerca al 36 %, y la media baja de 5,2 a 4,3. Después la línea gira, alrededor del año.</p>
+    <div class="grid-2">
+      <div class="chart-card">
+        <div class="chart-title"><span data-l="en">Share of months with no recorded visit</span><span data-l="es">Proporción de meses sin visita registrada</span></div>
+        <div class="chart" id="chart-zero" role="img" aria-label="Share of zero-visit months by month of consecutive run"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><span data-l="en">Mean recorded visits per month</span><span data-l="es">Media de visitas registradas por mes</span></div>
+        <div class="chart" id="chart-mean" role="img" aria-label="Mean visits by month of consecutive run"></div>
+      </div>
+    </div>
+    <p class="caveat"><b data-l="en">Read with care.</b><b data-l="es">Leer con cuidado.</b> <span data-l="en">Each point mixes different people: those who stay past a year are not the same group who started. The turn after month 12 can come from who remains, not from anyone visiting more. This describes the population, not each member's path.</span><span data-l="es">Cada punto mezcla personas distintas: quienes siguen después de un año no son el mismo grupo que empezó. El giro tras el mes 12 puede deberse a quién permanece, no a que alguien venga más. Describe a la población, no el recorrido de cada socio.</span></p>
+    <details class="table-view"><summary><span data-l="en">Show as table</span><span data-l="es">Ver como tabla</span></summary><div data-table="streak"></div></details>
+  </div>
+</section>
+
+<section class="chapter alt" id="change">
+  <div class="wrap">
+    <p class="eyebrow mono">04</p>
+    <h2 data-l="en">Month to month, more go down than up.</h2>
+    <h2 data-l="es">De un mes al siguiente, bajan más de los que suben.</h2>
+    <p class="intro" data-l="en">Across 73,352 pairs of adjacent eligible months, the count fell more often than it rose. These are arithmetic signs, not states: a drop from 12 to 11 and a drop from 5 to 0 count the same here.</p>
+    <p class="intro" data-l="es">En 73.352 pares de meses elegibles contiguos, el conteo bajó más veces de las que subió. Son signos aritméticos, no estados: pasar de 12 a 11 y de 5 a 0 cuentan igual aquí.</p>
+    <div class="chart-card">
+      <div class="chart" id="chart-change" role="img" aria-label="Share of adjacent month pairs with fewer, equal or more visits"></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="clubs">
+  <div class="wrap">
+    <p class="eyebrow mono">05</p>
+    <h2 data-l="en">Three clubs, four years.</h2>
+    <h2 data-l="es">Tres clubes, cuatro años.</h2>
+    <p class="intro" data-l="en">Mean visits per eligible month stayed between about 3.4 and 6.1 in every club. The regular-month population grew and changed throughout, so the wiggles are not validated seasonality.</p>
+    <p class="intro" data-l="es">La media de visitas por mes elegible se mantuvo entre 3,4 y 6,1 aproximadamente en todos los clubes. La población de meses regulares creció y cambió todo el tiempo, así que las oscilaciones no son una estacionalidad validada.</p>
+    <div class="chart-card">
+      <div class="chart-title"><span data-l="en">Mean recorded visits per eligible month, by club</span><span data-l="es">Media de visitas registradas por mes elegible, por club</span></div>
+      <div class="chart-legend" id="legend-clubs"></div>
+      <div class="chart" id="chart-clubs" role="img" aria-label="Mean visits per eligible month over time for three clubs"></div>
+      <p class="chart-note" data-l="en">Months with fewer than 50 eligible member-months are not shown.</p>
+      <p class="chart-note" data-l="es">No se muestran meses con menos de 50 meses-socio elegibles.</p>
+      <details class="table-view"><summary><span data-l="en">Show as table</span><span data-l="es">Ver como tabla</span></summary><div data-table="clubs"></div></details>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="method">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow mono">06</p>
+      <h2 data-l="en">Before counting, choose which months count.</h2>
+      <h2 data-l="es">Antes de contar, elegir qué meses cuentan.</h2>
+      <p class="intro" data-l="en">The archive holds 491,506 member-month rows. Only regular monthly or annual contract months inside each club's documented span, with accepted source flags, enter the analysis. Promotional, prorated, frozen and ambiguous months are left out, and their attendance becomes unknown, not zero.</p>
+      <p class="intro" data-l="es">El archivo tiene 491.506 filas socio-mes. Solo entran meses de contrato regular mensual o anual dentro del periodo documentado de cada club y con banderas de origen aceptadas. Los meses promocionales, prorrateados, congelados y ambiguos quedan fuera, y su asistencia pasa a ser desconocida, no cero.</p>
+      <p class="note" data-l="en">This conservative subset does not reproduce the published 7,752-member sample; the selection policy is documented and versioned (<code>berkeley_regular_month_v1</code>).</p>
+      <p class="note" data-l="es">Este subconjunto conservador no reproduce la muestra publicada de 7.752 socios; la política de selección está documentada y versionada (<code>berkeley_regular_month_v1</code>).</p>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title"><span data-l="en">Member-month rows kept at each selection step</span><span data-l="es">Filas socio-mes que quedan en cada paso de selección</span></div>
+      <div class="chart" id="chart-funnel" role="img" aria-label="Selection funnel from source rows to regular contract months"></div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="limits">
+  <div class="wrap">
+    <p class="eyebrow mono">07</p>
+    <h2 data-l="en">What monthly attendance can and cannot say.</h2>
+    <h2 data-l="es">Lo que la asistencia mensual puede y no puede decir.</h2>
+    <div class="can-cannot">
+      <div class="can">
+        <h3 data-l="en">It can describe</h3><h3 data-l="es">Puede describir</h3>
+        <ul>
+          <li data-l="en">Volume of recorded visits per eligible month</li><li data-l="es">El volumen de visitas registradas por mes elegible</li>
+          <li data-l="en">Empty months and runs of empty months</li><li data-l="es">Meses vacíos y rachas de meses vacíos</li>
+          <li data-l="en">Consistency over complete 3- and 6-month windows</li><li data-l="es">Constancia en ventanas completas de 3 y 6 meses</li>
+          <li data-l="en">Changes between adjacent eligible months</li><li data-l="es">Cambios entre meses elegibles contiguos</li>
+        </ul>
+      </div>
+      <div class="cannot">
+        <h3 data-l="en">It cannot establish</h3><h3 data-l="es">No puede establecer</h3>
+        <ul>
+          <li data-l="en">Days since the last visit, time of day or weekday habits: the table is monthly</li><li data-l="es">Días desde la última visita, horario o día de la semana: la tabla es mensual</li>
+          <li data-l="en">Churn probability: no outcome is modelled here</li><li data-l="es">Probabilidad de churn: aquí no se modela ningún resultado</li>
+          <li data-l="en">Validated engagement states, segments or risk scores</li><li data-l="es">Estados de compromiso, segmentos o puntuaciones de riesgo validados</li>
+          <li data-l="en">How present-day gyms behave: these are 1997–2001 records</li><li data-l="es">Cómo se comportan los gimnasios actuales: son registros de 1997–2001</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter alt" id="twin">
+  <div class="wrap">
+    <p class="eyebrow mono">08</p>
+    <h2 data-l="en">One module of an open gym digital twin.</h2>
+    <h2 data-l="es">Un módulo de un gemelo digital abierto de gimnasio.</h2>
+    <ol class="pipeline">
+      <li class="active"><b data-l="en">Observe</b><b data-l="es">Observar</b><span data-l="en">This lab: monthly behavior metrics with a data contract</span><span data-l="es">Este laboratorio: métricas mensuales con contrato de datos</span></li>
+      <li><b data-l="en">Connect</b><b data-l="es">Conectar</b><span data-l="en">Same source and keys as the Retention lab; 81,927 rows matched</span><span data-l="es">Misma fuente y claves que Retention; 81.927 filas cotejadas</span></li>
+      <li><b data-l="en">Predict</b><b data-l="es">Predecir</b><span data-l="en">Lives in Retention, with its own target and limits</span><span data-l="es">Vive en Retention, con su propio objetivo y límites</span></li>
+      <li><b data-l="en">Simulate</b><b data-l="es">Simular</b><span data-l="en">Future work</span><span data-l="es">Trabajo futuro</span></li>
+      <li><b data-l="en">Decide</b><b data-l="es">Decidir</b><span data-l="en">Future work</span><span data-l="es">Trabajo futuro</span></li>
+    </ol>
+    <p class="intro" data-l="en">Behavior features and future outcomes stay in separate modules on purpose, so attendance metrics cannot quietly leak into a churn label.</p>
+    <p class="intro" data-l="es">Las métricas de conducta y los resultados futuros viven en módulos separados a propósito, para que la asistencia no se filtre sin querer en una etiqueta de churn.</p>
+  </div>
+</section>
+
+<section class="chapter" id="reproduce">
+  <div class="wrap two-col">
+    <div>
+      <p class="eyebrow mono">09</p>
+      <h2 data-l="en">Reproduce it.</h2>
+      <h2 data-l="es">Reprodúcelo.</h2>
+      <p class="intro" data-l="en">The archive is downloaded from the authors' page and checked against a pinned SHA-256 before any analysis. The public Kaggle notebook repeats the full selection and recovers the same totals; it writes aggregates only.</p>
+      <p class="intro" data-l="es">El archivo se descarga de la página de los autores y se comprueba contra un SHA-256 fijado antes de cualquier análisis. El notebook público de Kaggle repite toda la selección y obtiene los mismos totales; solo escribe agregados.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/victorgomezadapty/ogdt-member-behavior"><span data-l="en">Source code on GitHub</span><span data-l="es">Código en GitHub</span> ↗</a>
+        <a class="btn" href="https://www.kaggle.com/code/vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance"><span data-l="en">Kaggle notebook</span><span data-l="es">Notebook en Kaggle</span> ↗</a>
+      </div>
+    </div>
+    <pre class="code mono" aria-label="Commands"><span class="c"># Python 3.14</span>
+python scripts/acquire_berkeley.py --download
+python scripts/analyze_berkeley.py
+python scripts/verify_berkeley.py
+python -m unittest discover -s tests</pre>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap foot-grid">
+    <div>
+      <p><b data-l="en">Source.</b><b data-l="es">Fuente.</b> DellaVigna, S. &amp; Malmendier, U. (2006). Paying Not to Go to the Gym. <i>American Economic Review</i>, 96(3), 694–719. <a href="https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml"><span data-l="en">Author data page</span><span data-l="es">Página de datos de los autores</span></a>.</p>
+      <p data-l="en">The archive's redistribution terms are not established, so this site publishes aggregates only: no member IDs, rows or individual trajectories, and no group under 50 member-months.</p>
+      <p data-l="es">Los términos de redistribución del archivo no están establecidos, así que este sitio publica solo agregados: ningún ID, fila ni trayectoria individual, y ningún grupo de menos de 50 meses-socio.</p>
+    </div>
+    <div>
+      <p data-l="en">Analysis, code and site by <a href="https://victor-gomez-portfolio.vercel.app">Víctor Gómez</a>. Original code under MIT; third-party data keeps its own rights.</p>
+      <p data-l="es">Análisis, código y sitio de <a href="https://victor-gomez-portfolio.vercel.app">Víctor Gómez</a>. Código original bajo MIT; los datos de terceros conservan sus propios derechos.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip" role="status" aria-live="polite" hidden></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
