@@ -49,8 +49,12 @@ def main():
     checks["retention_export_fingerprint_still_matches"]=hashlib.sha256((retention_root/"data/processed/berkeley/monthly_features.csv").read_bytes()).hexdigest()==integration["retention_features_sha256"]
     checks["retention_contract_fingerprint_still_matches"]=hashlib.sha256((retention_root/"handoff/data_contract.yaml").read_bytes()).hexdigest()==integration["retention_contract_sha256"]
     manifest=json.loads((raw.parent/"manifest.json").read_text(encoding="utf-8"))
-    shared=Path(manifest["copied_from"])
-    checks["shared_archive_still_unchanged"]=shared.exists() and hashlib.sha256(shared.read_bytes()).hexdigest()==ARCHIVE_SHA256
+    if str(manifest["copied_from"]).startswith("https://"):
+        # Downloaded from the author: the frozen local copy is the reference.
+        checks["shared_archive_still_unchanged"]=manifest["archive_sha256"]==ARCHIVE_SHA256==hashlib.sha256(raw.read_bytes()).hexdigest()
+    else:
+        shared=Path(manifest["copied_from"])
+        checks["shared_archive_still_unchanged"]=shared.exists() and hashlib.sha256(shared.read_bytes()).hexdigest()==ARCHIVE_SHA256
     contract=yaml.safe_load((ROOT/"handoff/monthly_data_contract.yaml").read_text(encoding="utf-8"))
     checks["contract_matches_grain_key_and_scope"]=contract["canonical_key"]==KEY and contract["source"]["synthetic"] is False and not contract["retention_boundary"]["new_model_trained"] and not contract["selection"]["reproduces_published_7752_member_sample"]
     figure_paths=list((reports/"figures").glob("*.png"))
