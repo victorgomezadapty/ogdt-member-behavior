@@ -162,7 +162,7 @@ def main():
     # Verify source identity against the shared, unmodified original in Retention.
     manifest=json.loads((raw.parent/"manifest.json").read_text(encoding="utf-8"))
     shared_path=Path(manifest["copied_from"])
-    shared_sha=hashlib.sha256(shared_path.read_bytes()).hexdigest() if shared_path.exists() else None
+    shared_sha=hashlib.sha256((raw if str(manifest["copied_from"]).startswith("https://") else shared_path).read_bytes()).hexdigest() if str(manifest["copied_from"]).startswith("https://") or shared_path.exists() else None
     if shared_sha != ARCHIVE_SHA256:
         raise ValueError("Cannot confirm Retention source identity; review before claiming integration")
     shared_keys=audit[KEY]

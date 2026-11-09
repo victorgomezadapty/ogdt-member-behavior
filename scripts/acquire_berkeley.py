@@ -51,7 +51,7 @@ def main():
     manifest = {"dataset_id": DATASET_ID, "synthetic": False, "source_page": "https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml",
                 "local_acquisition": ("downloaded from author page" if args.download
                                       else "byte-identical copy of author archive held in ogdt-retention"),
-                "copied_from": str(source), "acquired_at_utc": datetime.now(timezone.utc).isoformat(),
+                "copied_from": "https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml", "acquired_at_utc": datetime.now(timezone.utc).isoformat(),
                 "archive_sha256": ARCHIVE_SHA256, "archive_bytes": len(content), "files": files,
                 "redistribution_terms": "pending_review_no_raw_or_person_level_publication"}
     (raw / "manifest.json").write_text(json.dumps(manifest, indent=2)+"\n", encoding="utf-8")
