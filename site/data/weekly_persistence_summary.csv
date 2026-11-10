@@ -1,0 +1,8 @@
+metric,estimate,ci_low,ci_high
+r_week_to_week,0.6633,0.6405,0.6829
+p_any_next_given_any,0.8156,0.8039,0.8264
+p_any_next_given_none,0.3185,0.3001,0.3388
+r_weeks5_8_to_1_4,0.691,0.6514,0.7248
+auc_any_weeks1_4,0.8419,0.8128,0.8675
+r_control_past4_to_study,0.7965,0.75,0.8342
+r_control_past4_to_after,0.7038,0.6284,0.7648
