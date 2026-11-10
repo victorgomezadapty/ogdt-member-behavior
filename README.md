@@ -2,7 +2,7 @@
 
 **How long do memberships last, how do frequency, renewals, classes and recency line up with that, and does past weekly attendance predict the next weeks?**
 
-**Live site:** https://ogdt-member-behavior.vercel.app · **Kaggle notebook:** https://www.kaggle.com/code/vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance
+**Live site:** https://ogdt-member-behavior.vercel.app · **Kaggle notebook:** https://www.kaggle.com/code/vctorandrsgmezlpez/ogdt-member-behavior-membership-and-weekly-visits
 
 This lab is the *Observe* module of **Open Gym Digital Twin** (Observe, Connect, Predict, Simulate, Decide). It describes member behavior. Dropout prediction lives in the separate Retention lab, which uses the same Lisbon source and the same totals.
 
