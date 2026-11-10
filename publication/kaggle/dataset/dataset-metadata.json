@@ -1,0 +1,11 @@
+{
+  "title": "Open Gym Member Behavior Inputs",
+  "id": "vctorandrsgmezlpez/open-gym-member-behavior-inputs",
+  "subtitle": "Lisbon sport services memberships (CC BY 4.0) and weekly gym visits (CC0)",
+  "description": "Two filtered input files for the OGDT Member Behavior notebook.\n\nlisboa_members.csv: 14,942 rows, 10 columns selected from the Sport Services Dataset by Paulo Pinheiro and Luis Cavique, Mendeley Data v1, doi:10.17632/yprk4jdgnv.1, licensed CC BY 4.0. Changes: columns selected (no user ID, age or gender); values unchanged.\n\ncarrera_weekly_visits.csv: 1,292 rows, 14 columns selected from the replication data of Carrera, Royer, Stehr, Sydnor and Taubinsky, Who Chooses Commitment? Evidence and Welfare Implications, Review of Economic Studies, doi:10.1093/restud/rdab056; Zenodo doi:10.5281/zenodo.5173081. The package licence file dedicates the data to CC0 1.0. Changes: columns selected (no demographics); counts unchanged.\n\nCode: https://github.com/victorgomezadapty/ogdt-member-behavior",
+  "licenses": [{"name": "CC-BY-4.0"}],
+  "resources": [
+    {"path": "lisboa_members.csv", "description": "Sport Services Dataset (Pinheiro & Cavique), selected columns, CC BY 4.0"},
+    {"path": "carrera_weekly_visits.csv", "description": "Carrera et al. weekly gym visits, selected columns, CC0 1.0"}
+  ]
+}

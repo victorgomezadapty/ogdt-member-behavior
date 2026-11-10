@@ -1,64 +1,74 @@
-# OGDT Member Behavior: a paid month is not a visited month
+# OGDT Member Behavior: how members use the gym before they stop
 
-**What can attendance alone tell us about gym member engagement, before anyone talks about churn?**
+**How long do memberships last, how do frequency, renewals, classes and recency line up with that, and does past weekly attendance predict the next weeks?**
 
 **Live site:** https://ogdt-member-behavior.vercel.app · **Kaggle notebook:** https://www.kaggle.com/code/vctorandrsgmezlpez/ogdt-member-behavior-monthly-gym-attendance
 
-This lab is the *Observe* module of **Open Gym Digital Twin** (Observe → Connect → Predict → Simulate → Decide). It turns a real, historical membership archive into reproducible monthly behavior metrics with a data contract, and is explicit about what those metrics cannot support.
+This lab is the *Observe* module of **Open Gym Digital Twin** (Observe, Connect, Predict, Simulate, Decide). It describes member behavior. Dropout prediction lives in the separate Retention lab, which uses the same Lisbon source and the same totals.
 
-![Membership card: 30 of every 100 regular paid months recorded no visit](site/assets/og.png)
+![Membership card: 80 of every 100 memberships ended in dropout](site/assets/og.png)
+
+## Data (open licences only)
+
+| Source | What it holds | Licence |
+|---|---|---|
+| Pinheiro, P. & Cavique, L. (2020). *Sport Services Dataset*, Mendeley Data v1, [doi:10.17632/yprk4jdgnv.1](https://doi.org/10.17632/yprk4jdgnv.1) ("Lisbon") | 14,942 users of one sports facility who enrolled between June 2014 and October 2019; one row per user, 47 columns | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| Carrera, M., Royer, H., Stehr, M., Sydnor, J. & Taubinsky, D. *Who Chooses Commitment? Evidence and Welfare Implications*, Review of Economic Studies, [doi:10.1093/restud/rdab056](https://doi.org/10.1093/restud/rdab056). Replication package: [Zenodo 5173081](https://doi.org/10.5281/zenodo.5173081) | 1,292 members of a US gym: weekly visits for the 8 weeks before a field study, then 4-week totals during and after it | Data dedicated to [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) in the package `LICENSE.txt` (code BSD-3-Clause). The Zenodo record lists CC BY 4.0, so the work is attributed in full either way. |
+
+Changes made: columns were selected (no user ID, age or gender), and the analysis tables are aggregates. `data/processed/` holds the two filtered input files used by the code and the Kaggle notebook.
 
 ## Findings
 
-Source: the author replication archive of DellaVigna & Malmendier (2006), *Paying Not to Go to the Gym*, three US health clubs, 1997–2001. Analysed subset: **84,251 regular contract member-months from 8,073 members**, with **397,354 recorded visits**.
+Lisbon, 14,942 memberships; 11,968 dropouts (80.1%); 2,974 still active on 31 October 2019 and treated as censored.
 
-- **3 in 10 paid months had no visit.** 30.4% of regular member-months recorded zero visits. Median 3 visits per month, mean 4.7.
-- **1 in 6 three-month windows was entirely empty.** 16.1% of 64,347 complete three-month windows had no month with a visit.
-- **The first month is the busiest.** The zero-visit share rises from 23.4% in the first eligible month of a run to 35.8% by month 11. This is a population view: the people who remain change over time.
-- **Month to month, more go down than up.** Of 73,352 adjacent-month pairs, 39.8% fell, 28.5% stayed equal and 31.7% rose.
+- **Half of memberships are over by month ten.** Kaplan-Meier median 10.3 months. Still active: 84.1% at 3 months, 67.4% at 6, 41.1% at 12 (95% CI 40.2 to 41.9), 24.7% at 24, 16.3% at 36.
+- **Renewals track length, by construction.** No renewal: median 3.5 months; three or more renewals: 45.1 months. You can only renew if you stay long enough.
+- **Coming more often did not mean staying longer.** Raw dropout share falls from 84.7% (under 0.5 visits a week) to 65.1% (2 or more), but 12-month survival is 41.8%, 42.4%, 37.5% and 40.7% across the four bands. Frequent users enrolled later (median September 2017 vs April 2016) and were more often still active (34.9% vs 15.3%).
+- **Class-goers stayed about twice as long.** 4,510 users with at least one class: median 17.8 months, 60.5% active at 12 months. 10,432 without: 8.1 months, 32.7%. Association only.
+- **Before the dropout, the visits had already stopped.** Days without a visit at the end of the record: median 47 for dropouts, 5 for active users; more than 30 days for 71.4% of dropouts vs 19.0% of active users.
+
+Carrera et al., 1,292 members, pre-study weeks with no intervention (9,044 adjacent week pairs); 95% intervals from 1,000 person-level bootstrap resamples, seed 20261110.
+
+- **Last week is the best guide to next week.** Correlation of weekly visit counts 0.66 (0.64 to 0.68). Visited at least once: 81.6% visited the next week (80.4 to 82.6); did not: 31.9% (30.0 to 33.9).
+- **A month of visits predicts the next month.** Weeks 5 to 8 before the study vs weeks 1 to 4: r 0.69 (0.65 to 0.72); AUC 0.84 (0.81 to 0.87) for any visit in weeks 1 to 4. Control group (n = 427, no incentive): pre-study 4 weeks vs the 4 study weeks r 0.80 (0.75 to 0.83), vs the 4 weeks after r 0.70 (0.63 to 0.76).
+
+## What was dropped
+
+An earlier version analysed monthly contract states and month-to-month attendance transitions from an archive without an open licence. That analysis and every file derived from it have been removed. No openly licensed dataset records gym contracts month by month, so there is no honest open replacement. An earlier synthetic sandbox was removed as well: this lab now uses real open data only.
 
 ## Scope and limits
 
-Monthly counts only: no days since the last visit, time of day or weekday habits. No churn model, engagement states, segments or risk scores are produced here. Prediction lives in the separate Retention lab, so behavior features cannot leak into an outcome label. The selection policy `berkeley_regular_month_v1` is conservative and documented. It does **not** reproduce the published 7,752-member sample. Excluded months become unknown, never zero. These are 1997–2001 records, not evidence about present-day gyms.
-
-**Data rights.** The archive's redistribution terms are not established ([review](docs/publication_review.md)). This repository, the site and the Kaggle notebook therefore publish **aggregates only**: no raw tables, member IDs, member-level rows or individual trajectories. The site rejects any group below 50 member-months; its aggregate tables can be downloaded as CSV from the site (`site/data/`). Raw data and person-level derivatives stay local and are ignored by Git. The MIT license covers original code and documentation only.
+- In Lisbon, average frequency, renewals, classes and days without a visit are measured over or at the end of each membership. They describe how memberships ended; they are not early signals and must not be used as predictors of the same dropout.
+- Associations, not causes. Class attendance and renewals are confounded with membership length.
+- One facility and one gym study. Neither represents every gym.
+- In Carrera et al., visits during the study are affected by the incentives, so only pre-study weeks and the control group are used for persistence.
 
 ## Reproduce
 
-Python 3.14; exact versions in `requirements.txt` and `reports/berkeley/environment.json`.
+Python 3.12 or later.
 
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
+```bash
 python -m pip install -r requirements.txt
-python scripts/acquire_berkeley.py --download   # author archive, SHA-256 checked before use
-python scripts/analyze_berkeley.py
-python scripts/execute_notebooks.py --notebook 07_berkeley_monthly_eda.ipynb
-python scripts/verify_berkeley.py
+python scripts/acquire.py       # Mendeley and Zenodo downloads, hashes checked
+python scripts/prepare.py       # data/processed/*.csv and Kaggle dataset copies
+python scripts/build_site.py    # reports/results.json, site/data/*.csv, site/assets/data.js
+python scripts/build_notebook.py
 python -m unittest discover -s tests
-python scripts/build_site.py                    # site data + aggregate CSV downloads
-python scripts/render_og.py                     # social card from site/og.html
 ```
-
-Without `--download`, acquisition copies the byte-identical archive already held by the sibling Retention lab. The comparison with that lab's feature export is checked only when the export is available.
 
 ## Repository
 
 ```text
-src/data/            Source loading, hash checks, selection policy
-src/features/        Monthly behavior metrics (as-of, no future information)
-scripts/             Acquire, analyze, verify, notebooks, Kaggle package, site data
-tests/               Temporal, coverage and monthly-metric regression tests
-notebooks/07_*       Berkeley monthly analysis (aggregate figures only)
-reports/berkeley/    Report, source audit, verification, integration and Kaggle evidence
-handoff/             Monthly data contract, feature catalog, definitions, limits
-site/                Public bilingual site (static, aggregate data only)
-publication/kaggle/  Standalone notebook package
-docs/                Methodology, dictionaries, data readiness, publication review, lab notes
+src/analysis.py         Kaplan-Meier, survival by group, recency, weekly persistence, bootstrap
+scripts/                Acquire, prepare, build site data, build and run the notebook, social card
+data/processed/         The two filtered input files (CC BY 4.0 and CC0)
+reports/results.json    Every number on the site
+notebooks/              Analysis notebook (executed)
+publication/kaggle/     Kaggle notebook, kernel metadata and dataset metadata
+site/                   Public bilingual site (static) and aggregate CSV downloads
+docs/                   Methodology and data notes
 ```
 
-**Synthetic sandbox.** Notebooks 01–03b and `reports/milestone_1.*` use the Mindweave synthetic sample (CC BY-NC 4.0). They are kept as software and methodology evidence and are never mixed with the real Berkeley population. Notebooks 04–06 are code-free roadmaps for states, segmentation and behavioral risk: the decision each would serve, the evidence it needs and the gate before any implementation. See the full [lab notes](docs/lab_notes.md), the [monthly methodology](docs/monthly_methodology.md) and the [Berkeley report](reports/berkeley/report.md).
+## Licence and credit
 
-## Source and credit
-
-DellaVigna, S. & Malmendier, U. (2006). Paying Not to Go to the Gym. *American Economic Review*, 96(3), 694–719. Data: [author page](https://eml.berkeley.edu/~sdellavi/data/gymdata.shtml). Analysis, code and site: [Víctor Gómez](https://victor-gomez-portfolio.vercel.app).
+Original code and documentation: MIT. Data keeps its own licence (above). Aggregate tables in `site/data/` are shared under CC BY 4.0 with attribution to both sources. Analysis, code and site: [Víctor Gómez](https://victor-gomez-portfolio.vercel.app).

@@ -1,109 +1,73 @@
-"""Build the public site's data file from local Berkeley outputs: aggregates only.
+"""Run the analysis and write results, aggregate CSVs and site/assets/data.js."""
+from __future__ import annotations
 
-Redistribution rights for the source are not established, so the site never
-receives member IDs, member-level rows or per-person trajectories. Every
-published group must contain at least MIN_CELL eligible member-months.
-"""
-from pathlib import Path
+import csv
 import json
 import sys
+from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
-from src.data.berkeley import ARCHIVE_SHA256, DATASET_ID
+sys.path.insert(0, str(ROOT / "src"))
+import analysis as A  # noqa: E402
 
-PROCESSED = ROOT / "data/processed/berkeley"
-OUT = ROOT / "site/assets/data.js"
-MIN_CELL = 50
-MAX_STREAK_MONTH = 24
-HIST_CAP = 16
+SITE_DATA = ROOT / "site" / "data"
 
 
-def checked(frame, column):
-    small = frame[frame[column] < MIN_CELL]
-    if len(small):
-        raise ValueError(f"Group below {MIN_CELL} member-months would be published:\n{small}")
-    return frame
+def write_csv(name: str, head: list, rows: list) -> None:
+    with open(SITE_DATA / name, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(head); w.writerows(rows)
 
 
-def main():
-    metrics = pd.read_csv(PROCESSED / "member_month_metrics.csv")
-    attendance = metrics.recorded_attendance_month
-    summary = json.loads((ROOT / "reports/berkeley/summary.json").read_text(encoding="utf-8"))
-    assert len(metrics) == summary["eligible_rows"], "metrics and summary disagree"
+def r4(x):
+    return None if x is None else round(float(x), 4)
 
-    hist = attendance.clip(upper=HIST_CAP).astype(int).value_counts().sort_index()
-    hist = checked(pd.DataFrame({"visits": hist.index, "months": hist.values}), "months")
 
-    streak = metrics[metrics.consecutive_eligible_months <= MAX_STREAK_MONTH].groupby("consecutive_eligible_months")
-    streak = checked(pd.DataFrame({
-        "month": streak.size().index,
-        "n": streak.size().values,
-        "mean": streak.recorded_attendance_month.mean().round(3).values,
-        "zero": streak.recorded_attendance_month.apply(lambda s: (s == 0).mean()).round(4).values,
-    }), "n")
-
-    windows = metrics.positive_attendance_months_3.dropna().astype(int).value_counts().sort_index()
-    windows = checked(pd.DataFrame({"positive_months": windows.index, "windows": windows.values}), "windows")
-
-    change = metrics.attendance_change_vs_previous_month.dropna()
-    changes = {"down": int((change < 0).sum()), "same": int((change == 0).sum()), "up": int((change > 0).sum())}
-
-    monthly = pd.read_csv(PROCESSED / "monthly_summary.csv")
-    monthly = monthly[monthly.eligible_rows >= MIN_CELL]
-    clubs = {
-        str(club): [{"period": row.period_end[:7], "n": int(row.eligible_rows), "mean": round(row.mean_attendance, 3),
-                     "zero": round(row.zero_fraction, 4)} for row in group.itertuples()]
-        for club, group in monthly.groupby("club_id")
+def main() -> None:
+    lis = pd.read_csv(ROOT / "data" / "processed" / "lisboa_members.csv")
+    car = pd.read_csv(ROOT / "data" / "processed" / "carrera_weekly_visits.csv")
+    res = A.run(lis, car)
+    A.checks(res)
+    (ROOT / "reports").mkdir(exist_ok=True)
+    (ROOT / "reports" / "results.json").write_text(json.dumps(res, indent=1) + "\n", encoding="utf-8")
+    SITE_DATA.mkdir(parents=True, exist_ok=True)
+    L, C = res["lisboa"], res["carrera"]
+    km = A.kaplan_meier(A.prepare_lisboa(lis)["months"], A.prepare_lisboa(lis)["event"])
+    write_csv("survival_overall.csv", ["month", "survival", "ci_low", "ci_high"],
+              [[m, r4(p["survival"]), r4(p["lo"]), r4(p["hi"])] for m in range(0, 49) for p in [A.km_at(km, m)]])
+    for key, fname in [("by_frequency", "survival_by_weekly_frequency.csv"), ("by_renewals", "survival_by_renewals.csv"),
+                       ("by_classes", "survival_by_classes.csv")]:
+        write_csv(fname, ["group", "users", "dropouts", "dropout_share", "km_median_months", "survival_12m", "survival_12m_ci_low", "survival_12m_ci_high"],
+                  [[g["group"], g["users"], g["dropouts"], r4(g["dropout_share"]), r4(g["median_months"]), r4(g["s12"]["survival"]), r4(g["s12"]["lo"]), r4(g["s12"]["hi"])] for g in L[key]])
+    write_csv("days_without_visit_at_end.csv", ["days_band", "dropouts", "active"],
+              [[b["band"], b["dropouts"], b["active"]] for b in L["recency"]["bands"]])
+    tr = C["transition"]
+    write_csv("weekly_transitions.csv", ["visits_this_week"] + [f"next_week_{c}" for c in tr["cols"]],
+              [[r] + row for r, row in zip(tr["rows"], tr["counts"])])
+    keys = ["r_week_to_week", "p_any_next_given_any", "p_any_next_given_none", "r_weeks5_8_to_1_4", "auc_any_weeks1_4",
+            "r_control_past4_to_study", "r_control_past4_to_after"]
+    write_csv("weekly_persistence_summary.csv", ["metric", "estimate", "ci_low", "ci_high"],
+              [[k, r4(C[k]), r4(C["ci"][k][0]), r4(C["ci"][k][1])] for k in keys])
+    (SITE_DATA / "README.txt").write_text(
+        "Aggregate tables behind every chart on ogdt-member-behavior.\n\n"
+        "survival_*.csv and days_without_visit_at_end.csv: derived from the Lisboa Sport Services Dataset\n"
+        "(Pinheiro & Cavique, Mendeley Data, doi:10.17632/yprk4jdgnv.1), CC BY 4.0.\n"
+        "weekly_*.csv: derived from the replication data of Carrera, Royer, Stehr, Sydnor & Taubinsky,\n"
+        "Who Chooses Commitment? (Review of Economic Studies), Zenodo doi:10.5281/zenodo.5173081, data under CC0 1.0.\n\n"
+        "Survival values are Kaplan-Meier estimates with log-log 95% intervals (Greenwood variance).\n"
+        "Persistence intervals are percentile intervals from 1,000 person-level bootstrap resamples (seed 20261110).\n"
+        "These tables are shared under CC BY 4.0 with the attribution above.\n", encoding="utf-8")
+    site = {
+        "lisboa": {k: L[k] for k in ["users", "dropouts", "dropout_share", "active", "enrol_first", "enrol_last", "censor_date",
+                                      "median_months", "survival_at", "curve", "by_frequency", "by_renewals", "by_classes",
+                                      "recency", "frequency_context", "frequency_median"]},
+        "carrera": C,
+        "km_band": [[m, r4(p["lo"]), r4(p["hi"])] for m in range(0, 49) for p in [A.km_at(km, m)]],
     }
-
-    stages = pd.read_csv(PROCESSED / "selection_stages.csv")
-    data = {
-        "generated_from": {"dataset_id": DATASET_ID, "archive_sha256": ARCHIVE_SHA256,
-                           "selection_policy": summary["selection_policy_id"], "min_cell": MIN_CELL,
-                           "member_level_rows": False},
-        "headline": {k: summary[k] for k in [
-            "source_rows", "source_members", "eligible_rows", "eligible_members", "recorded_events_in_eligible_rows",
-            "mean_attendance_per_eligible_month", "median_attendance_per_eligible_month", "zero_recorded_fraction",
-            "adjacent_comparisons", "complete_3_month_windows", "complete_6_month_windows",
-            "eligible_first_period_end", "eligible_last_period_end"]},
-        "funnel": [{"stage": r.stage, "rows": int(r.rows), "members": int(r.members)} for r in stages.itertuples()],
-        "histogram": {"cap": HIST_CAP, "bins": hist.to_dict("records")},
-        "streak": streak.to_dict("records"),
-        "windows3": windows.to_dict("records"),
-        "changes": changes,
-        "clubs": clubs,
-    }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text("// Generated by scripts/build_site.py: aggregates only, no member-level rows.\n"
-                   "window.OGDT_DATA = " + json.dumps(data, separators=(",", ":"), default=int) + ";\n", encoding="utf-8")
-    print(f"Wrote {OUT.relative_to(ROOT)}: {OUT.stat().st_size:,} bytes")
-
-    # The same aggregate tables as downloadable CSVs: the most that can be shared without data rights.
-    tables = {
-        "visits_per_month_histogram.csv": hist.rename(columns={"visits": f"visits_in_month_capped_at_{HIST_CAP}"}),
-        "attendance_by_consecutive_month.csv": streak.rename(columns={"n": "member_months", "mean": "mean_visits", "zero": "zero_visit_share"}),
-        "three_month_windows.csv": windows,
-        "month_to_month_change.csv": pd.DataFrame([{"direction": k, "adjacent_pairs": v} for k, v in changes.items()]),
-        "club_monthly_summary.csv": monthly[["club_id", "period_end", "eligible_rows", "members", "recorded_events",
-                                             "mean_attendance", "median_attendance", "zero_fraction"]],
-        "selection_funnel.csv": stages,
-    }
-    csv_dir = ROOT / "site/data"
-    csv_dir.mkdir(parents=True, exist_ok=True)
-    for name, frame in tables.items():
-        assert "member_id" not in frame.columns
-        frame.to_csv(csv_dir / name, index=False)
-    (csv_dir / "README.txt").write_text(
-        "OGDT Member Behavior: aggregate tables behind https://ogdt-member-behavior.vercel.app\n"
-        f"Source: DellaVigna & Malmendier (2006), Paying Not to Go to the Gym, AER 96(3). Archive SHA-256 {ARCHIVE_SHA256}.\n"
-        f"Selection policy {summary['selection_policy_id']}. Aggregates only: no member IDs or rows; "
-        f"no group below {MIN_CELL} member-months (the selection funnel reports whole-source totals).\n"
-        "Redistribution rights for the underlying archive are not established; these are derived summaries.\n"
-        "Generated by scripts/build_site.py.\n", encoding="utf-8")
-    print(f"Wrote {len(tables)} aggregate CSVs to site/data/")
+    (ROOT / "site" / "assets" / "data.js").write_text(
+        "// Generated by scripts/build_site.py. Aggregates only.\nwindow.OGDT_DATA = " + json.dumps(site, separators=(",", ":")) + ";\n", encoding="utf-8")
+    print("median months", round(L["median_months"], 2), "r", round(C["r_week_to_week"], 3), C["ci"]["r_week_to_week"])
 
 
 if __name__ == "__main__":

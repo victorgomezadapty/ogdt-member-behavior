@@ -6,31 +6,31 @@
   var lang = function () { return document.documentElement.lang === 'es' ? 'es' : 'en'; };
   var T = {
     en: {
-      visits: 'visits', months: 'member-months', ofMonths: 'of eligible months', windows: 'windows',
-      noVisit: 'no recorded visit', monthOfRun: 'Month of consecutive eligible run', run: 'Month',
-      zeroShare: 'months with no visit', meanVisits: 'mean visits', n: 'member-months',
-      down: 'Fewer visits', same: 'Same', up: 'More visits', pairs: 'adjacent month pairs',
-      club: 'Club', monthsWith: function (k) { return k === 1 ? '1 month with a visit' : k + ' months with a visit'; },
-      stages: ['All source calendar rows', 'Inside documented club span', 'Source review flags accepted', 'Regular contract months'],
-      members: 'members', rows: 'rows', period: 'Month', perMonth: 'mean visits / month', plus: '+',
-      cols: { visits: 'Visits in month', months: 'Member-months', share: 'Share', month: 'Run month', zero: 'No-visit share', mean: 'Mean visits', windows: 'Windows', k: 'Months with a visit' }
+      month: 'Month', months: 'months', active: 'still active', ci: '95% interval', users: 'users', dropouts: 'dropouts',
+      renew: function (g) { return g === '0' ? 'No renewal' : g === '1' ? '1 renewal' : g + ' renewals'; },
+      band: function (g) { return g + ' / week'; }, cls: { 'No classes': 'No classes', 'Attended classes': 'Attended classes' },
+      days: 'days', dropGroup: 'Dropouts', actGroup: 'Active users', thisWeek: 'Visits this week', nextWeek: 'Next week', pairs: 'week pairs',
+      share: 'share', median: 'Median months', s12: 'Active at 12 months', rawShare: 'Dropout share', group: 'Group', est: 'Estimate',
+      metrics: { r_week_to_week: 'Week to next week, r', p_any_next_given_any: 'Visit next week if visited (share)', p_any_next_given_none: 'Visit next week if not (share)',
+        r_weeks5_8_to_1_4: 'Weeks 5 to 8 to weeks 1 to 4, r', auc_any_weeks1_4: 'Any visit in weeks 1 to 4, AUC', r_control_past4_to_study: 'Control: before to study, r', r_control_past4_to_after: 'Control: before to after, r' }
     },
     es: {
-      visits: 'visitas', months: 'meses-socio', ofMonths: 'de los meses elegibles', windows: 'ventanas',
-      noVisit: 'ninguna visita registrada', monthOfRun: 'Mes de la racha elegible consecutiva', run: 'Mes',
-      zeroShare: 'meses sin visita', meanVisits: 'media de visitas', n: 'meses-socio',
-      down: 'Menos visitas', same: 'Igual', up: 'Más visitas', pairs: 'pares de meses contiguos',
-      club: 'Club', monthsWith: function (k) { return k === 1 ? '1 mes con visita' : k + ' meses con visita'; },
-      stages: ['Todas las filas del calendario', 'Dentro del periodo documentado', 'Banderas de origen aceptadas', 'Meses de contrato regular'],
-      members: 'socios', rows: 'filas', period: 'Mes', perMonth: 'media de visitas / mes', plus: '+',
-      cols: { visits: 'Visitas en el mes', months: 'Meses-socio', share: 'Proporción', month: 'Mes de racha', zero: 'Proporción sin visita', mean: 'Media de visitas', windows: 'Ventanas', k: 'Meses con visita' }
+      month: 'Mes', months: 'meses', active: 'aún activa', ci: 'intervalo del 95 %', users: 'usuarios', dropouts: 'bajas',
+      renew: function (g) { return g === '0' ? 'Sin renovación' : g === '1' ? '1 renovación' : g + ' renovaciones'; },
+      band: function (g) { return g.replace('.', ',') + ' / semana'; }, cls: { 'No classes': 'Sin clases', 'Attended classes': 'Con clases' },
+      days: 'días', dropGroup: 'Bajas', actGroup: 'Activos', thisWeek: 'Visitas esta semana', nextWeek: 'Semana siguiente', pairs: 'pares de semanas',
+      share: 'proporción', median: 'Meses (mediana)', s12: 'Activa a 12 meses', rawShare: 'Proporción de bajas', group: 'Grupo', est: 'Estimación',
+      metrics: { r_week_to_week: 'Semana a la siguiente, r', p_any_next_given_any: 'Vuelve si vino (proporción)', p_any_next_given_none: 'Vuelve si no vino (proporción)',
+        r_weeks5_8_to_1_4: 'Semanas 5 a 8 a semanas 1 a 4, r', auc_any_weeks1_4: 'Alguna visita en semanas 1 a 4, AUC', r_control_past4_to_study: 'Control: antes a estudio, r', r_control_past4_to_after: 'Control: antes a después, r' }
     }
   };
   var t = function () { return T[lang()]; };
   var locale = function () { return lang() === 'es' ? 'es-ES' : 'en-US'; };
   var fmt = function (n, d) { return Number(n).toLocaleString(locale(), { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0, useGrouping: 'always' }); };
-  var pct = function (x, d) { return fmt(x * 100, d === undefined ? 1 : d) + ' %'; };
-  var pctEn = function (x, d) { return lang() === 'es' ? pct(x, d) : fmt(x * 100, d === undefined ? 1 : d) + '%'; };
+  var pct = function (x, d) { var v = fmt(x * 100, d === undefined ? 1 : d); return lang() === 'es' ? v + ' %' : v + '%'; };
+  var css = function (v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); };
+  var SERIES = ['var(--accent)', 'var(--ink)', 'var(--ink-2)', 'var(--muted)'];
+  var DASH = ['', '', '6 4', '2 4'];
 
   function el(tag, attrs, parent) {
     var node = document.createElementNS(NS, tag);
@@ -77,11 +77,11 @@
   }
   function hideTip() { tip.hidden = true; }
 
-  // Membership card: 100 cells, empty share rounded from the real zero fraction.
+
+  // Membership card: 100 cells, empty share = dropout share rounded.
   function card() {
     var host = document.getElementById('punches');
-    var empty = Math.round(D.headline.zero_recorded_fraction * 100);
-    // Seeded shuffle: the same irregular layout on every visit, without stripes.
+    var empty = Math.round(D.lisboa.dropout_share * 100);
     var order = [], seed = 20061, emptySet = {};
     for (var i = 0; i < 100; i++) order.push(i);
     for (var s = 99; s > 0; s--) {
@@ -106,187 +106,164 @@
     io.observe(host);
   }
 
-  function statNumbers() {
-    document.querySelectorAll('[data-fmt]').forEach(function (n) { n.textContent = fmt(D.headline[n.dataset.fmt]); });
-    document.querySelectorAll('.stat b.mono:not([data-fmt])').forEach(function (n) {
-      n.innerHTML = fmt(D.headline.median_attendance_per_eligible_month) + ' <small>/ ' + fmt(D.headline.mean_attendance_per_eligible_month, 1) + '</small>';
-    });
-  }
-
-  // 01 Histogram
-  function hist() {
-    var bins = D.histogram.bins, total = bins.reduce(function (s, b) { return s + b.months; }, 0);
-    var f = frame('chart-hist', 300), m = { l: 58, r: 12, t: 30, b: 40 };
-    var iw = f.w - m.l - m.r, ih = f.h - m.t - m.b, max = 28000, gap = 2;
-    var bw = iw / bins.length;
-    var y = function (v) { return m.t + ih - (v / max) * ih; };
+  // Shared survival axes: months 0..48 on x, share 0..1 on y.
+  function survAxes(id, h) {
+    var f = frame(id, h), m = { l: 44, r: 14, t: 12, b: 34 }, iw = f.w - m.l - m.r, ih = h - m.t - m.b;
+    var x = function (v) { return m.l + iw * v / 48; }, y = function (v) { return m.t + ih * (1 - v); };
     var g = el('g', { class: 'axis' }, f.svg);
-    ticks(max, 4).forEach(function (v) {
-      el('line', { x1: m.l, x2: f.w - m.r, y1: y(v), y2: y(v), class: 'gridline' }, g);
-      text(g, m.l - 8, y(v) + 4, fmt(v), '', 'end');
+    [0, .25, .5, .75, 1].forEach(function (v) {
+      el('line', { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: 'gridline' }, g);
+      text(g, m.l - 8, y(v) + 4, pct(v, 0), '', 'end');
     });
-    bins.forEach(function (b, i) {
-      var x = m.l + i * bw + gap / 2, h = ih * b.months / max;
-      var isZero = b.visits === 0;
-      el('path', { d: barPath(x, y(b.months), bw - gap, h, 4), fill: isZero ? 'var(--accent)' : 'var(--ink-2)', opacity: isZero ? 1 : .78 }, f.svg);
-      var label = b.visits === D.histogram.cap ? b.visits + t().plus : String(b.visits);
-      if (bw > 22 || i % 2 === 0 || b.visits === D.histogram.cap) text(f.svg, x + (bw - gap) / 2, f.h - m.b + 16, label, '', 'middle');
-      var hit = el('rect', { x: m.l + i * bw, y: m.t, width: bw, height: ih, class: 'hit' }, f.svg);
-      hit.addEventListener('pointermove', function (e) {
-        showTip(e, '<b>' + label + '</b> ' + t().visits + '<br><b>' + fmt(b.months) + '</b> ' + t().months + ' · ' + pctEn(b.months / total));
-      });
-      hit.addEventListener('pointerleave', hideTip);
+    [0, 6, 12, 18, 24, 30, 36, 42, 48].forEach(function (v) { text(g, x(v), h - 12, fmt(v), '', 'middle'); });
+    text(g, m.l + iw, h - 0, t().months, '', 'end');
+    return { f: f, x: x, y: y, m: m, iw: iw, ih: ih };
+  }
+  function stepPath(ax, curve) {
+    var d = 'M' + ax.x(0) + ',' + ax.y(curve[0]);
+    for (var i = 1; i < curve.length; i++) d += 'H' + ax.x(i) + 'V' + ax.y(curve[i]);
+    return d;
+  }
+  function hover(ax, series) {
+    var hit = el('rect', { x: ax.m.l, y: ax.m.t, width: ax.iw, height: ax.ih, class: 'hit', fill: 'transparent' }, ax.f.svg);
+    var guide = el('line', { y1: ax.m.t, y2: ax.m.t + ax.ih, stroke: 'var(--muted)', 'stroke-dasharray': '3 3', opacity: 0 }, ax.f.svg);
+    hit.addEventListener('mousemove', function (e) {
+      var r = ax.f.svg.getBoundingClientRect(), mx = (e.clientX - r.left) * ax.f.w / r.width;
+      var mo = Math.max(0, Math.min(48, Math.round((mx - ax.m.l) / ax.iw * 48)));
+      guide.setAttribute('x1', ax.x(mo)); guide.setAttribute('x2', ax.x(mo)); guide.setAttribute('opacity', 1);
+      showTip(e, '<b>' + t().month + ' ' + mo + '</b><br>' + series.map(function (s) { return s.name + ': ' + pct(s.curve[mo]); }).join('<br>'));
     });
-    var z = bins[0];
-    text(f.svg, m.l + bw + 6, y(z.months) + 10, fmt(z.months) + ' · ' + pctEn(z.months / total), 'strong big');
-    text(f.svg, m.l + bw + 6, y(z.months) + 26, t().noVisit, '');
-    text(f.svg, m.l + iw / 2, f.h - 4, t().cols.visits, '', 'middle');
-    table('hist', [t().cols.visits, t().cols.months, t().cols.share], bins.map(function (b) {
-      return [b.visits === D.histogram.cap ? b.visits + t().plus : b.visits, fmt(b.months), pctEn(b.months / total)];
-    }));
+    hit.addEventListener('mouseleave', function () { hideTip(); guide.setAttribute('opacity', 0); });
+  }
+  function legend(id, items) {
+    var host = document.getElementById(id); if (!host) return;
+    host.innerHTML = items.map(function (s, i) { var st = DASH[i] ? 'background:none;border-top:3px ' + (DASH[i] === '6 4' ? 'dashed' : 'dotted') + ' ' + SERIES[i] + ';height:0' : 'background:' + SERIES[i];
+      return '<span><i style="' + st + '"></i>' + s + '</span>'; }).join('');
   }
 
-  // 02 Three-month windows, 100% stacked bar (ordinal ramp)
-  function windows() {
-    var rows = D.windows3, total = rows.reduce(function (s, r) { return s + r.windows; }, 0);
-    var host = document.getElementById('chart-windows'), narrow = (host.clientWidth || 600) < 520;
-    // Narrow screens: labels become a list under the bar so they cannot collide.
-    var f = frame('chart-windows', narrow ? 60 + rows.length * 24 : 190), m = { l: 4, r: 4 }, iw = f.w - m.l - m.r, gap = 2, top = narrow ? 4 : 70, bh = 44;
-    var x = m.l;
-    rows.forEach(function (r, i) {
-      var w = iw * r.windows / total - (i < rows.length - 1 ? gap : 0);
-      var seg = el('rect', { x: x, y: top, width: Math.max(w, 1), height: bh, rx: i === 0 || i === rows.length - 1 ? 4 : 0, fill: 'var(--ord-' + r.positive_months + ')' }, f.svg);
-      var share = r.windows / total, cx = x + w / 2, above = i % 2 === 0;
-      var name = r.positive_months === 0 ? (lang() === 'es' ? 'ninguno' : 'none') : t().monthsWith(r.positive_months);
-      if (narrow) {
-        var ry = top + bh + 22 + i * 24;
-        el('rect', { x: m.l, y: ry - 11, width: 12, height: 12, rx: 3, fill: 'var(--ord-' + r.positive_months + ')' }, f.svg);
-        text(f.svg, m.l + 20, ry, name, '');
-        text(f.svg, f.w - m.r, ry, pctEn(share), 'strong', 'end');
-      } else {
-        var ly = above ? top - 30 : top + bh + 22;
-        el('line', { x1: cx, x2: cx, y1: above ? ly + 8 : top + bh, y2: above ? top : ly - 14, stroke: 'var(--line)' }, f.svg);
-        text(f.svg, cx, ly, pctEn(share), r.positive_months === 0 ? 'strong big' : 'strong', 'middle');
-        text(f.svg, cx, ly + 15, name, '', 'middle');
+  function km() {
+    var L = D.lisboa, ax = survAxes('chart-km', 300);
+    var band = D.km_band, d = 'M' + ax.x(0) + ',' + ax.y(band[0][2]);
+    for (var i = 1; i < band.length; i++) d += 'H' + ax.x(i) + 'V' + ax.y(band[i][2]);
+    for (var j = band.length - 1; j >= 1; j--) d += 'V' + ax.y(band[j - 1][1]) + 'H' + ax.x(j - 1);
+    el('path', { d: d + 'Z', fill: 'var(--accent-soft)', opacity: .9 }, ax.f.svg);
+    el('path', { d: stepPath(ax, L.curve), fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2.5 }, ax.f.svg);
+    var med = L.median_months;
+    el('line', { x1: ax.x(0), x2: ax.x(med), y1: ax.y(.5), y2: ax.y(.5), stroke: 'var(--ink-2)', 'stroke-dasharray': '4 4' }, ax.f.svg);
+    el('line', { x1: ax.x(med), x2: ax.x(med), y1: ax.y(.5), y2: ax.y(0), stroke: 'var(--ink-2)', 'stroke-dasharray': '4 4' }, ax.f.svg);
+    text(ax.f.svg, ax.x(med) + 6, ax.y(.5) - 8, (lang() === 'es' ? 'mediana ' : 'median ') + fmt(med, 1) + ' ' + t().months, 'strong');
+    hover(ax, [{ name: t().active, curve: L.curve }]);
+    table('km', [t().month, t().active, t().ci], L.survival_at.map(function (p) { return [fmt(p.months), pct(p.survival), pct(p.lo) + ' · ' + pct(p.hi)]; }));
+  }
+
+  function curves(id, legendId, groups, label, h) {
+    var ax = survAxes(id, h || 280);
+    groups.forEach(function (g, i) { el('path', { d: stepPath(ax, g.curve), fill: 'none', stroke: SERIES[i], 'stroke-width': 2.3, 'stroke-dasharray': DASH[i] }, ax.f.svg); });
+    legend(legendId, groups.map(function (g) { return label(g.group) + ' (' + fmt(g.users) + ')'; }));
+    hover(ax, groups.map(function (g) { return { name: label(g.group), curve: g.curve }; }));
+  }
+  function groupRows(groups, label) {
+    return groups.map(function (g) { return [label(g.group), fmt(g.users), fmt(g.dropouts), pct(g.dropout_share), g.median_months === null ? '' : fmt(g.median_months, 1), pct(g.s12.survival) + ' (' + pct(g.s12.lo) + ' · ' + pct(g.s12.hi) + ')']; });
+  }
+  var groupHead = function () { return [t().group, t().users, t().dropouts, t().rawShare, t().median, t().s12]; };
+
+  function renewals() {
+    curves('chart-renewals', 'legend-renewals', D.lisboa.by_renewals, t().renew, 300);
+    table('renewals', groupHead(), groupRows(D.lisboa.by_renewals, t().renew));
+  }
+  function classes() { curves('chart-classes', 'legend-classes', D.lisboa.by_classes, function (g) { return t().cls[g]; }, 300); }
+
+  function bars(id, items, opts) {
+    var h = 250, f = frame(id, h), m = { l: 44, r: 10, t: 22, b: 34 }, iw = f.w - m.l - m.r, ih = h - m.t - m.b;
+    var y = function (v) { return m.t + ih * (1 - v); }, bw = iw / items.length;
+    var g = el('g', { class: 'axis' }, f.svg);
+    [0, .25, .5, .75, 1].forEach(function (v) { el('line', { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: 'gridline' }, g); text(g, m.l - 8, y(v) + 4, pct(v, 0), '', 'end'); });
+    items.forEach(function (it, i) {
+      var x0 = m.l + i * bw + bw * .2, w = bw * .6;
+      el('path', { d: barPath(x0, y(it.v), w, y(0) - y(it.v), 4), fill: opts.color || 'var(--ink-2)' }, f.svg);
+      if (it.lo !== undefined) {
+        var cx = x0 + w / 2;
+        el('line', { x1: cx, x2: cx, y1: y(it.lo), y2: y(it.hi), stroke: 'var(--ink)', 'stroke-width': 1.5 }, f.svg);
+        [it.lo, it.hi].forEach(function (v) { el('line', { x1: cx - 5, x2: cx + 5, y1: y(v), y2: y(v), stroke: 'var(--ink)', 'stroke-width': 1.5 }, f.svg); });
       }
-      seg.addEventListener('pointermove', function (e) { showTip(e, '<b>' + t().monthsWith(r.positive_months) + '</b><br>' + fmt(r.windows) + ' ' + t().windows + ' · ' + pctEn(share)); });
-      seg.addEventListener('pointerleave', hideTip);
-      x += w + gap;
+      text(f.svg, x0 + w / 2, y(it.hi !== undefined ? it.hi : it.v) - 7, pct(it.v), 'strong', 'middle');
+      text(f.svg, x0 + w / 2, h - 12, it.label, '', 'middle');
+      var hit = el('rect', { x: m.l + i * bw, y: m.t, width: bw, height: ih, fill: 'transparent', class: 'hit' }, f.svg);
+      hit.addEventListener('mousemove', function (e) { showTip(e, it.tip); });
+      hit.addEventListener('mouseleave', hideTip);
     });
-    table('windows', [t().cols.k, t().cols.windows, t().cols.share], rows.map(function (r) { return [r.positive_months, fmt(r.windows), pctEn(r.windows / total)]; }));
   }
 
-  // 03 Line chart with crosshair (single series: title names it, no legend)
-  function line(id, rows, key, max, format, color) {
-    var f = frame(id, 250), m = { l: 46, r: 16, t: 16, b: 42 };
-    var iw = f.w - m.l - m.r, ih = f.h - m.t - m.b, n = rows.length;
-    var x = function (i) { return m.l + (i / (n - 1)) * iw; };
-    var y = function (v) { return m.t + ih - (v / max) * ih; };
+  function frequency() {
+    var G = D.lisboa.by_frequency;
+    bars('chart-freq-raw', G.map(function (g) { return { label: t().band(g.group), v: g.dropout_share, tip: '<b>' + t().band(g.group) + '</b><br>' + fmt(g.dropouts) + ' / ' + fmt(g.users) + ' ' + t().users }; }), { color: 'var(--accent)' });
+    bars('chart-freq-km', G.map(function (g) { return { label: t().band(g.group), v: g.s12.survival, lo: g.s12.lo, hi: g.s12.hi, tip: '<b>' + t().band(g.group) + '</b><br>' + pct(g.s12.survival) + ' (' + pct(g.s12.lo) + ' · ' + pct(g.s12.hi) + ')' }; }), { color: 'var(--ink-2)' });
+    table('freq', groupHead(), groupRows(G, t().band));
+  }
+
+  function recency() {
+    var B = D.lisboa.recency.bands, nd = 0, na = 0;
+    B.forEach(function (b) { nd += b.dropouts; na += b.active; });
+    var h = 260, f = frame('chart-recency', h), m = { l: 44, r: 10, t: 22, b: 34 }, iw = f.w - m.l - m.r, ih = h - m.t - m.b;
+    var max = .7, y = function (v) { return m.t + ih * (1 - v / max); }, bw = iw / B.length;
     var g = el('g', { class: 'axis' }, f.svg);
-    ticks(max, 4).forEach(function (v) {
-      el('line', { x1: m.l, x2: f.w - m.r, y1: y(v), y2: y(v), class: 'gridline' }, g);
-      text(g, m.l - 8, y(v) + 4, format(v, 0), '', 'end');
+    [0, .2, .4, .6].forEach(function (v) { el('line', { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: 'gridline' }, g); text(g, m.l - 8, y(v) + 4, pct(v, 0), '', 'end'); });
+    B.forEach(function (b, i) {
+      [[b.dropouts / nd, 'var(--accent)', t().dropGroup, b.dropouts], [b.active / na, 'var(--ink)', t().actGroup, b.active]].forEach(function (s, k) {
+        var w = bw * .32, x0 = m.l + i * bw + bw * .16 + k * w;
+        el('path', { d: barPath(x0, y(s[0]), w - 2, y(0) - y(s[0]), 3), fill: s[1] }, f.svg);
+        text(f.svg, x0 + w / 2, y(s[0]) - 6, pct(s[0], 0), '', 'middle');
+      });
+      text(f.svg, m.l + i * bw + bw / 2, h - 12, b.band + ' ' + t().days, '', 'middle');
+      var hit = el('rect', { x: m.l + i * bw, y: m.t, width: bw, height: ih, fill: 'transparent', class: 'hit' }, f.svg);
+      hit.addEventListener('mousemove', function (e) { showTip(e, '<b>' + b.band + ' ' + t().days + '</b><br>' + t().dropGroup + ': ' + fmt(b.dropouts) + ' (' + pct(b.dropouts / nd) + ')<br>' + t().actGroup + ': ' + fmt(b.active) + ' (' + pct(b.active / na) + ')'); });
+      hit.addEventListener('mouseleave', hideTip);
     });
-    [1, 6, 12, 18, 24].forEach(function (mo) { text(g, x(mo - 1), f.h - m.b + 16, String(mo), '', 'middle'); });
-    text(g, m.l + iw / 2, f.h - 4, t().monthOfRun, '', 'middle');
-    el('line', { x1: x(11), x2: x(11), y1: m.t, y2: m.t + ih, stroke: 'var(--line)', 'stroke-dasharray': '3 3' }, f.svg);
-    text(f.svg, x(11) + 4, m.t + ih - 6, lang() === 'es' ? '1 año' : '1 year', '');
-    el('path', { d: rows.map(function (r, i) { return (i ? 'L' : 'M') + x(i) + ',' + y(r[key]); }).join(''), fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, f.svg);
-    [0, 10].forEach(function (i) {
-      var cy = y(rows[i][key]);
-      // Put the label on the side the line is not heading to, so it never sits on the stroke.
-      var below = i === 0 && y(rows[1][key]) < cy;
-      el('circle', { cx: x(i), cy: cy, r: 4, fill: color, stroke: 'var(--surface)', 'stroke-width': 2 }, f.svg);
-      text(f.svg, x(i) + (i ? 0 : 8), below ? cy + 18 : cy - 10, format(rows[i][key], 1), 'strong', i ? 'middle' : 'start');
-    });
-    var cross = el('line', { y1: m.t, y2: m.t + ih, stroke: 'var(--muted)', 'stroke-width': 1, visibility: 'hidden' }, f.svg);
-    var dot = el('circle', { r: 5, fill: color, stroke: 'var(--surface)', 'stroke-width': 2, visibility: 'hidden' }, f.svg);
-    var hit = el('rect', { x: m.l, y: m.t, width: iw, height: ih, class: 'hit' }, f.svg);
-    hit.addEventListener('pointermove', function (e) {
-      var box = f.svg.getBoundingClientRect(), px = (e.clientX - box.left) * (f.w / box.width);
-      var i = Math.max(0, Math.min(n - 1, Math.round(((px - m.l) / iw) * (n - 1)))), r = rows[i];
-      cross.setAttribute('x1', x(i)); cross.setAttribute('x2', x(i)); cross.setAttribute('visibility', 'visible');
-      dot.setAttribute('cx', x(i)); dot.setAttribute('cy', y(r[key])); dot.setAttribute('visibility', 'visible');
-      showTip(e, t().run + ' <b>' + r.month + '</b><br>' + t().zeroShare + ': <b>' + pctEn(r.zero) + '</b><br>' + t().meanVisits + ': <b>' + fmt(r.mean, 2) + '</b><br>n = ' + fmt(r.n));
-    });
-    hit.addEventListener('pointerleave', function () { hideTip(); cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); });
-  }
-  function streak() {
-    line('chart-zero', D.streak, 'zero', .4, function (v, d) { return pctEn(v, d); }, 'var(--accent)');
-    line('chart-mean', D.streak, 'mean', 6, function (v, d) { return fmt(v, d); }, 'var(--ink)');
-    table('streak', [t().cols.month, t().cols.months, t().cols.zero, t().cols.mean], D.streak.map(function (r) { return [r.month, fmt(r.n), pctEn(r.zero), fmt(r.mean, 2)]; }));
+    legend('legend-recency', [t().dropGroup + ' (' + fmt(nd) + ')', t().actGroup + ' (' + fmt(na) + ')']);
+    document.querySelectorAll('#legend-recency i')[1].style.background = 'var(--ink)';
+    table('recency', [t().days, t().dropGroup, t().actGroup], B.map(function (b) { return [b.band, fmt(b.dropouts) + ' (' + pct(b.dropouts / nd) + ')', fmt(b.active) + ' (' + pct(b.active / na) + ')']; }));
   }
 
-  // 04 Month-to-month change: diverging single bar
-  function change() {
-    var c = D.changes, total = c.down + c.same + c.up;
-    var f = frame('chart-change', 150), m = { l: 4, r: 4 }, iw = f.w - m.l - m.r, top = 54, bh = 40, gap = 2, x = m.l;
-    [['down', c.down], ['same', c.same], ['up', c.up]].forEach(function (p, i) {
-      var w = iw * p[1] / total - (i < 2 ? gap : 0), share = p[1] / total;
-      var seg = el('rect', { x: x, y: top, width: w, height: bh, rx: i !== 1 ? 4 : 0, fill: 'var(--' + p[0] + ')' }, f.svg);
-      text(f.svg, i === 0 ? x : (i === 2 ? x + w : x + w / 2), top - 24, pctEn(share), 'strong big', i === 0 ? 'start' : i === 2 ? 'end' : 'middle');
-      text(f.svg, i === 0 ? x : (i === 2 ? x + w : x + w / 2), top - 9, t()[p[0]], '', i === 0 ? 'start' : i === 2 ? 'end' : 'middle');
-      text(f.svg, i === 0 ? x : (i === 2 ? x + w : x + w / 2), top + bh + 20, fmt(p[1]), '', i === 0 ? 'start' : i === 2 ? 'end' : 'middle');
-      seg.addEventListener('pointermove', function (e) { showTip(e, '<b>' + t()[p[0]] + '</b><br>' + fmt(p[1]) + ' / ' + fmt(total) + ' ' + t().pairs); });
-      seg.addEventListener('pointerleave', hideTip);
-      x += w + gap;
+  function transition() {
+    var tr = D.carrera.transition, n = tr.rows.length;
+    var size = Math.min(document.getElementById('chart-transition').clientWidth || 420, 460);
+    var f = frame('chart-transition', size), m = { l: 60, t: 46, r: 8, b: 8 };
+    var cw = (f.w - m.l - m.r) / n, ch = (size - m.t - m.b) / n;
+    text(f.svg, m.l + (f.w - m.l - m.r) / 2, 14, t().nextWeek, 'strong', 'middle');
+    var rot = text(f.svg, 14, m.t + (size - m.t - m.b) / 2, t().thisWeek, 'strong', 'middle');
+    rot.setAttribute('transform', 'rotate(-90 14 ' + (m.t + (size - m.t - m.b) / 2) + ')');
+    tr.rows.forEach(function (r, i) {
+      var tot = tr.counts[i].reduce(function (a, b) { return a + b; }, 0);
+      text(f.svg, m.l - 10, m.t + i * ch + ch / 2 + 4, r, '', 'end');
+      tr.cols.forEach(function (c, j) {
+        if (i === 0) text(f.svg, m.l + j * cw + cw / 2, m.t - 8, c, '', 'middle');
+        var s = tr.counts[i][j] / tot;
+        var cell = el('rect', { x: m.l + j * cw + 1, y: m.t + i * ch + 1, width: cw - 2, height: ch - 2, rx: 4, fill: 'var(--accent)', 'fill-opacity': .08 + s * 1.3 }, f.svg);
+        text(f.svg, m.l + j * cw + cw / 2, m.t + i * ch + ch / 2 + 4, pct(s, 0), s > .4 ? 'strong lbl-inv' : '', 'middle');
+        cell.addEventListener('mousemove', function (e) { showTip(e, '<b>' + r + ' → ' + c + '</b><br>' + fmt(tr.counts[i][j]) + ' / ' + fmt(tot) + ' ' + t().pairs + ' (' + pct(s) + ')'); });
+        cell.addEventListener('mouseleave', hideTip);
+      });
     });
+    table('transition', [t().thisWeek].concat(tr.cols.map(function (c) { return t().nextWeek + ' ' + c; })), tr.rows.map(function (r, i) { return [r].concat(tr.counts[i].map(function (v) { return fmt(v); })); }));
   }
 
-  // 05 Clubs over time: one axis, direct labels + legend, crosshair across clubs
-  function clubs() {
-    var ids = Object.keys(D.clubs).sort(), colors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)'];
-    var periods = Array.from(new Set([].concat.apply([], ids.map(function (k) { return D.clubs[k].map(function (r) { return r.period; }); })))).sort();
-    var f = frame('chart-clubs', 300), m = { l: 40, r: 70, t: 14, b: 34 };
-    var iw = f.w - m.l - m.r, ih = f.h - m.t - m.b, min = 3, max = 7;
-    var x = function (p) { return m.l + (periods.indexOf(p) / (periods.length - 1)) * iw; };
-    var y = function (v) { return m.t + ih - ((v - min) / (max - min)) * ih; };
+  function persist() {
+    var C = D.carrera, keys = ['r_week_to_week', 'r_weeks5_8_to_1_4', 'auc_any_weeks1_4', 'r_control_past4_to_study', 'r_control_past4_to_after'];
+    var step = 46, h = keys.length * step + 30, f = frame('chart-persist', h), lab = Math.min(260, f.w * .45), m = { l: lab, r: 30, t: 10 }, iw = f.w - m.l - m.r;
+    var x = function (v) { return m.l + iw * v; };
     var g = el('g', { class: 'axis' }, f.svg);
-    [3, 4, 5, 6, 7].forEach(function (v) { el('line', { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: 'gridline' }, g); text(g, m.l - 8, y(v) + 4, String(v), '', 'end'); });
-    periods.forEach(function (p) { if (p.slice(5) === '01') text(g, x(p), f.h - m.b + 16, p.slice(0, 4), '', 'middle'); });
-    var legend = document.getElementById('legend-clubs');
-    legend.innerHTML = ids.map(function (k, i) { return '<span><i style="background:' + colors[i] + '"></i>' + t().club + ' ' + k + '</span>'; }).join('');
-    var ends = [];
-    ids.forEach(function (k, i) {
-      var rows = D.clubs[k];
-      el('path', { d: rows.map(function (r, j) { return (j ? 'L' : 'M') + x(r.period) + ',' + y(r.mean); }).join(''), fill: 'none', stroke: colors[i], 'stroke-width': 2, 'stroke-linejoin': 'round' }, f.svg);
-      var last = rows[rows.length - 1];
-      ends.push({ k: k, x: x(last.period), y: y(last.mean), color: colors[i] });
+    [0, .25, .5, .75, 1].forEach(function (v) { el('line', { x1: x(v), x2: x(v), y1: m.t, y2: h - 22, class: 'gridline' }, g); text(g, x(v), h - 6, fmt(v, 2), '', 'middle'); });
+    keys.forEach(function (k, i) {
+      var y = m.t + i * step + step / 2, ci = C.ci[k];
+      text(f.svg, 0, y + 4, t().metrics[k], '');
+      el('line', { x1: x(ci[0]), x2: x(ci[1]), y1: y, y2: y, stroke: 'var(--ink)', 'stroke-width': 6, 'stroke-linecap': 'round', opacity: .25 }, f.svg);
+      var dot = el('circle', { cx: x(C[k]), cy: y, r: 6, fill: 'var(--accent)' }, f.svg);
+      text(f.svg, x(C[k]), y - 12, fmt(C[k], 2), 'strong', 'middle');
+      dot.addEventListener('mousemove', function (e) { showTip(e, '<b>' + t().metrics[k] + '</b><br>' + fmt(C[k], 3) + ' (' + fmt(ci[0], 3) + ' · ' + fmt(ci[1], 3) + ')'); });
+      dot.addEventListener('mouseleave', hideTip);
     });
-    // Direct labels at line ends, nudged apart so they never collide.
-    ends.sort(function (a, b) { return a.y - b.y; });
-    for (var e = 1; e < ends.length; e++) if (ends[e].y - ends[e - 1].y < 14) ends[e].y = ends[e - 1].y + 14;
-    ends.forEach(function (d) {
-      el('circle', { cx: d.x, cy: d.y, r: 3.5, fill: d.color, stroke: 'var(--surface)', 'stroke-width': 2 }, f.svg);
-      text(f.svg, d.x + 8, d.y + 4, t().club + ' ' + d.k, 'strong');
-    });
-    var cross = el('line', { y1: m.t, y2: m.t + ih, stroke: 'var(--muted)', visibility: 'hidden' }, f.svg);
-    var hit = el('rect', { x: m.l, y: m.t, width: iw, height: ih, class: 'hit' }, f.svg);
-    hit.addEventListener('pointermove', function (ev) {
-      var box = f.svg.getBoundingClientRect(), px = (ev.clientX - box.left) * (f.w / box.width);
-      var i = Math.max(0, Math.min(periods.length - 1, Math.round(((px - m.l) / iw) * (periods.length - 1)))), p = periods[i];
-      cross.setAttribute('x1', x(p)); cross.setAttribute('x2', x(p)); cross.setAttribute('visibility', 'visible');
-      var html = '<b>' + p + '</b>';
-      ids.forEach(function (k) { var r = D.clubs[k].find(function (q) { return q.period === p; }); if (r) html += '<br>' + t().club + ' ' + k + ': <b>' + fmt(r.mean, 2) + '</b> (n=' + fmt(r.n) + ')'; });
-      showTip(ev, html);
-    });
-    hit.addEventListener('pointerleave', function () { hideTip(); cross.setAttribute('visibility', 'hidden'); });
-    var trows = [];
-    periods.forEach(function (p) { trows.push([p].concat(ids.map(function (k) { var r = D.clubs[k].find(function (q) { return q.period === p; }); return r ? fmt(r.mean, 2) + ' (' + fmt(r.n) + ')' : '–'; }))); });
-    table('clubs', [t().period].concat(ids.map(function (k) { return t().club + ' ' + k; })), trows);
-  }
-
-  // 06 Selection funnel
-  function funnel() {
-    var rows = D.funnel, max = rows[0].rows;
-    // Labels sit above each bar, so they never depend on the bar's width.
-    var step = 78, f = frame('chart-funnel', rows.length * step), iw = f.w;
-    rows.forEach(function (r, i) {
-      var y = i * step + 40, w = Math.max(6, iw * r.rows / max), last = i === rows.length - 1;
-      text(f.svg, 0, y - 24, t().stages[i], 'strong');
-      text(f.svg, 0, y - 8, fmt(r.rows) + ' ' + t().rows + ' · ' + fmt(r.members) + ' ' + t().members, '');
-      el('path', { d: hbarPath(0, y, w, 20, 4), fill: last ? 'var(--accent)' : 'var(--ink-2)', opacity: last ? 1 : .55 + i * .1 }, f.svg);
-    });
+    var all = ['r_week_to_week', 'p_any_next_given_any', 'p_any_next_given_none', 'r_weeks5_8_to_1_4', 'auc_any_weeks1_4', 'r_control_past4_to_study', 'r_control_past4_to_after'];
+    table('persist', [t().group, t().est, t().ci], all.map(function (k) { return [t().metrics[k], fmt(C[k], 3), fmt(C.ci[k][0], 3) + ' · ' + fmt(C.ci[k][1], 3)]; }));
   }
 
   function table(name, head, rows) {
@@ -296,7 +273,7 @@
       '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
   }
 
-  function renderAll() { statNumbers(); hist(); windows(); streak(); change(); clubs(); funnel(); }
+  function renderAll() { km(); renewals(); frequency(); classes(); recency(); transition(); persist(); }
   document.addEventListener('DOMContentLoaded', function () {
     card();
     renderAll();
